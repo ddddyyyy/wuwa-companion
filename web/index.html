@@ -8,28 +8,30 @@
 </head>
 <body>
   <aside>
-    <h1>WuWa Companion</h1>
+    <div class="brand"><span>W</span><div><h1>鸣潮管家</h1><small>WuWa Companion</small></div></div>
     <nav aria-label="功能">
-      <button class="active">角色与声骸</button>
-      <button disabled>抽卡分析 · 下一步</button>
+      <button class="active"><i>◆</i>角色与声骸</button>
+      <button disabled><i>✦</i>抽卡分析<small>即将推出</small></button>
     </nav>
+    <p class="source">评分配置来自 WWUID<br>数据来自 WuWaBuilds</p>
   </aside>
   <main>
     <header>
-      <div><p class="eyebrow">WUWA BUILDS</p><h2>角色与声骸</h2></div>
-      <a href="https://wuwa.build/import" target="_blank" rel="noreferrer">去 WuWaBuilds 更新</a>
+      <div><p class="eyebrow">RESONATOR ARCHIVE</p><h2>角色与声骸</h2><p class="lead">查看当前 Build，快速找到最值得优化的声骸。</p></div>
+      <a class="external" href="https://wuwa.build/import" target="_blank" rel="noreferrer">在 WuWaBuilds 更新 <span>↗</span></a>
     </header>
-    <form id="profile-form">
-      <label for="profile">UID 或 WuWaBuilds Profile 地址</label>
+    <form id="profile-form" class="search-card">
+      <label for="profile">玩家档案</label>
       <div class="input-row">
-        <input id="profile" name="profile" autocomplete="off" inputmode="numeric" placeholder="例如 701776400" required>
-        <button id="refresh" type="submit">刷新</button>
+        <span class="search-icon" aria-hidden="true">⌕</span>
+        <input id="profile" name="profile" autocomplete="off" inputmode="numeric" placeholder="输入 UID 或粘贴 WuWaBuilds Profile 地址" required>
+        <button id="refresh" type="submit">同步档案</button>
       </div>
+      <p id="status" role="status">数据保存在本机，不需要登录游戏账号</p>
     </form>
-    <p id="status" role="status">输入 UID 开始同步</p>
+    <section id="overview" aria-live="polite"></section>
     <section id="builds" aria-live="polite"></section>
   </main>
   <script type="module" src="/app.js"></script>
 </body>
 </html>
-
