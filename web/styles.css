@@ -62,7 +62,7 @@ input:focus { border-color: #9d864d; box-shadow: 0 0 0 3px rgba(215,189,120,.08)
 .roster-list .selected small { color: #b99e5d; }
 #builds { min-width: 0; height: 100vh; overflow: hidden; padding: 6px 8px 6px 6px; }
 article, .empty { position: relative; overflow: hidden; border: 1px solid #5e5e5e; border-radius: 17px; padding: 10px; background: linear-gradient(145deg, #171719 0 55%, #4a2c20 100%); box-shadow: 0 20px 60px rgba(0,0,0,.25); }
-article { width: 100%; height: 100%; display: grid; grid-template-rows: minmax(270px, 40%) 70px 32px minmax(0,1fr) 18px; }
+article { width: 100%; height: 100%; display: grid; grid-template-rows: minmax(270px, 40%) 76px 34px minmax(0,1fr) 18px; gap: 6px; }
 article::before { content: ""; position: absolute; inset: 0 auto 0 0; width: 2px; background: linear-gradient(transparent, rgba(215,189,120,.7), transparent); }
 .profile-panel { position: relative; display: grid; grid-template-columns: 47% 53%; height: 100%; overflow: hidden; border: 1px solid #747474; border-radius: 14px; background: #292a2c; }
 .character-art { position: relative; min-width: 0; min-height: 0; height: 100%; overflow: hidden; }
@@ -86,8 +86,8 @@ h3 { margin: 0; font-size: 25px; }
 .stat-row.useful span, .stat-row.useful strong, .echo-stats .useful { color: #d8c18a; }
 .stat-row.good span, .stat-row.good strong, .echo-stats .good { color: #e4a06f; }
 .stat-row.hot span, .stat-row.hot strong, .echo-stats .hot { color: #ff665f; text-shadow: 0 0 12px rgba(255,77,69,.18); }
-.equipment-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
-.weapon-card, .total { min-height: 76px; border: 1px solid var(--line); border-radius: 12px; background: linear-gradient(120deg, rgba(255,255,255,.055), rgba(255,255,255,.015)); }
+.equipment-row { min-height: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.weapon-card, .total { min-height: 0; height: 100%; border: 1px solid var(--line); border-radius: 12px; background: linear-gradient(120deg, rgba(255,255,255,.055), rgba(255,255,255,.015)); }
 .weapon-card { display: flex; align-items: center; gap: 12px; padding: 8px 14px; }
 .weapon-card img { width: 58px; height: 58px; object-fit: contain; filter: drop-shadow(0 5px 6px rgba(0,0,0,.35)); }
 .weapon-card div { display: grid; gap: 4px; }
@@ -103,7 +103,7 @@ h3 { margin: 0; font-size: 25px; }
 .grade-a { color: #a8d7ce; }
 .grade-b { color: #99b4d6; }
 .grade-c, .grade-na { color: #78828a; }
-.progress { display: grid; grid-template-columns: auto auto 1fr auto; align-items: center; gap: 9px; margin: 9px 0; border: 1px solid #555; border-radius: 10px; padding: 7px 12px; color: #d6d6d6; background: #050505; font-size: 11px; }
+.progress { min-height: 0; display: grid; grid-template-columns: auto auto 1fr auto; align-items: center; gap: 9px; margin: 0; border: 1px solid #555; border-radius: 10px; padding: 5px 12px; color: #d6d6d6; background: #050505; font-size: 11px; }
 .progress strong { color: #e1b96b; font-size: 13px; }
 .progress i { height: 10px; overflow: hidden; border-radius: 99px; background: #22272b; }
 .progress b { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #318e54, #85d268); }
@@ -126,7 +126,7 @@ h3 { margin: 0; font-size: 25px; }
 .echo-subs span { color: #899196; }
 .echo-subs em { justify-content: flex-end; color: #b9bec0; font-style: normal; }
 .echo-main.muted, .echo-subs .muted { color: #666d72; }.echo-main.useful, .echo-subs .useful { color: #d8c18a; }.echo-main.good, .echo-subs .good { color: #e4a06f; }.echo-main.hot, .echo-subs .hot { color: #ff665f; }
-.weakest { margin: 9px 0 0; color: #7f8990; font-size: 9px; }
+.weakest { margin: 0; align-self: center; color: #7f8990; font-size: 9px; }
 .weakest span { margin-right: 7px; border-radius: 4px; padding: 3px 6px; color: #d3bd82; background: rgba(215,189,120,.09); }
 .empty { color: #79838a; text-align: center; padding: 70px; }
 @media (max-width: 900px) {
