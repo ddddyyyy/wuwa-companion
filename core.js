@@ -1,3 +1,5 @@
+import { characterRules } from './character-rules.js';
+
 export function parseUID(input) {
   const value = String(input ?? '').trim();
   if (/^\d{9,10}$/.test(value)) return value;
@@ -35,35 +37,55 @@ export function normalizeBuild(detail) {
   };
 }
 
-const weights = {
-  'Crit Rate': 1, 'Crit DMG': 1, 'ATK%': 1, ATK: 0.6, 'Energy Regen': 0.5,
-  'Basic Attack DMG Bonus': 0.8, 'Heavy Attack DMG Bonus': 0.8,
-  'Resonance Skill DMG Bonus': 0.8, 'Resonance Liberation DMG Bonus': 0.8
-};
-const maximumRoll = {
-  'Crit Rate': 10.5, 'Crit DMG': 21, 'ATK%': 11.6, ATK: 60, 'Energy Regen': 12.4,
-  'Basic Attack DMG Bonus': 11.6, 'Heavy Attack DMG Bonus': 11.6,
-  'Resonance Skill DMG Bonus': 11.6, 'Resonance Liberation DMG Bonus': 11.6
+const fixedMainStats = {
+  1: { type: 'HP', value: 2280 },
+  3: { type: 'ATK', value: 100 },
+  4: { type: 'ATK', value: 150 }
 };
 
-export function scoreEcho(echo) {
-  const contributions = echo.subStats.map(stat => ({
+export function scoreEcho(echo, rule) {
+  if (!rule) return null;
+  const stats = [echo.mainStat, fixedMainStats[echo.cost], ...echo.subStats];
+  const contributions = stats.map((stat, index) => ({
     name: stat.type,
-    value: weights[stat.type] && maximumRoll[stat.type]
-      ? Math.min(Number(stat.value) / maximumRoll[stat.type], 1) * 10 * weights[stat.type]
-      : 0
+    source: index < 2 ? 'main' : 'sub',
+    raw: contribution(stat, index < 2 ? rule.mainWeights[echo.cost] : rule.subWeights, rule)
   }));
-  const value = Math.floor(Math.min(contributions.reduce((sum, item) => sum + item.value, 0), 50) * 100) / 100;
-  const grade = value >= 42 ? 'SSS' : value >= 39 ? 'SS' : value >= 35 ? 'S' : value >= 30 ? 'A' : value >= 24 ? 'B' : 'C';
-  return { id: echo.id, value, grade, contributions };
+  const raw = contributions.reduce((sum, item) => sum + item.raw, 0);
+  const ratio = raw / rule.maxScoreByCost[echo.cost];
+  const value = Math.floor(ratio * 50 * 100) / 100;
+  return { id: echo.id, value, grade: grade(ratio, rule.thresholds), contributions };
 }
 
 export function scoreBuild(build) {
-  const echoes = build.echoes.map(scoreEcho);
+  const rule = characterRules[build.characterId];
+  if (!rule) return { available: false, reason: '该角色暂无国内专属权重配置' };
+  const echoes = build.echoes.map(echo => scoreEcho(echo, rule));
+  const total = echoes.reduce((sum, echo) => sum + echo.value, 0);
   return {
+    available: true,
+    templateName: rule.templateName,
     echoes,
-    total: echoes.reduce((sum, echo) => sum + echo.value, 0),
+    total,
+    grade: grade(total / 250, rule.thresholds),
     weakest: echoes.reduce((weakest, echo) => !weakest || echo.value < weakest.value ? echo : weakest, null)
   };
 }
 
+function contribution(stat, weights, rule) {
+  if (!stat || !weights) return 0;
+  if (stat.type in rule.skillWeights) {
+    return Number(stat.value) * (weights.SkillDMG || 0) * rule.skillWeights[stat.type];
+  }
+  if (['Aero DMG', 'Glacio DMG', 'Fusion DMG', 'Electro DMG', 'Havoc DMG', 'Spectro DMG'].includes(stat.type)) {
+    return Number(stat.value) * (stat.type === `${rule.attribute} DMG` ? weights.AttributeDMG || 0 : 0);
+  }
+  return Number(stat.value) * (weights[stat.type] || 0);
+}
+
+function grade(ratio, thresholds) {
+  const labels = ['C', 'B', 'A', 'S', 'SS', 'SSS'];
+  let index = 0;
+  thresholds.forEach((threshold, candidate) => { if (ratio >= threshold) index = candidate; });
+  return labels[index];
+}

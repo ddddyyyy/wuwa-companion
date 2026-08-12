@@ -12,6 +12,7 @@ const staticFiles = new Map([
   ['/', ['web/index.html', 'text/html; charset=utf-8']],
   ['/app.js', ['web/app.js', 'text/javascript; charset=utf-8']],
   ['/core.js', ['core.js', 'text/javascript; charset=utf-8']],
+  ['/character-rules.js', ['character-rules.js', 'text/javascript; charset=utf-8']],
   ['/styles.css', ['web/styles.css', 'text/css; charset=utf-8']]
 ]);
 
@@ -81,4 +82,3 @@ function sendJSON(response, status, value) {
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   server.listen(port, '127.0.0.1', () => console.log(`WuWa Companion: http://127.0.0.1:${port}`));
 }
-

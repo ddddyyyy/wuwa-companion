@@ -1,4 +1,5 @@
 import { scoreBuild } from '/core.js';
+import { characterNames, weaponNames } from '/character-rules.js';
 
 const form = document.querySelector('#profile-form');
 const input = document.querySelector('#profile');
@@ -39,18 +40,24 @@ function render(items = []) {
 function buildCard(build) {
   const score = scoreBuild(build);
   const article = document.createElement('article');
+  const character = characterNames[build.characterId] || `角色 ${build.characterId}`;
+  const weapon = weaponNames[build.weaponId] || `武器 ${build.weaponId}`;
+  const rating = score.available
+    ? `<strong>${number(score.total)} / 250 · ${score.grade}</strong><span>${escapeHTML(score.templateName)}</span>`
+    : `<strong>暂无专属评分</strong><span>${escapeHTML(score.reason)}</span>`;
+  const echoScores = score.available ? score.echoes : build.echoes.map(() => null);
   article.innerHTML = `
     <div class="build-head">
-      <div><h3>角色 ${escapeHTML(build.characterId)}</h3><p>武器 ${escapeHTML(build.weaponId)} · S${build.sequence} · CV ${number(build.cv)}</p></div>
-      <div class="total"><strong>${number(score.total)} / 250</strong><span>通用输出试算</span></div>
+      <div><h3>${escapeHTML(character)}</h3><p>${escapeHTML(weapon)} · S${build.sequence} · CV ${number(build.cv)}</p></div>
+      <div class="total">${rating}</div>
     </div>
-    <div class="echoes">${build.echoes.map((echo, index) => echoCard(echo, score.echoes[index])).join('')}</div>
-    <p class="weakest">优先检查：${score.weakest.grade} · ${number(score.weakest.value)} 分</p>`;
+    <div class="echoes">${build.echoes.map((echo, index) => echoCard(echo, echoScores[index])).join('')}</div>
+    ${score.available ? `<p class="weakest">优先检查：${score.weakest.grade} · ${number(score.weakest.value)} 分</p>` : ''}`;
   return article;
 }
 
 function echoCard(echo, score) {
-  return `<details><summary><span>${echo.cost}C</span><strong>${score.grade}</strong><small>${number(score.value)}</small></summary>
+  return `<details><summary><span>${echo.cost}C</span><strong>${score?.grade || '—'}</strong><small>${score ? number(score.value) : '未配置'}</small></summary>
     <div class="stats"><b>主词条</b><span>${escapeHTML(echo.mainStat.type)} ${number(echo.mainStat.value)}</span>
     ${echo.subStats.map(stat => `<b>${escapeHTML(stat.type)}</b><span>${number(stat.value)}</span>`).join('')}</div></details>`;
 }
@@ -59,4 +66,3 @@ function number(value) { return Number(value).toFixed(1); }
 function escapeHTML(value) {
   return String(value).replace(/[&<>'"]/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[char]);
 }
-

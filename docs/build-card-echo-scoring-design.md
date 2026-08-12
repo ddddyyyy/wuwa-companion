@@ -2,7 +2,7 @@
 
 状态：实现中
 目标平台：Windows、macOS、Linux
-文档版本：1.3（2026-08-12）
+文档版本：1.4（2026-08-12）
 
 ## 1. 目标
 
@@ -286,7 +286,7 @@ WuWaBuilds 详情提供可变主词条；若评分需要 COST 固定的第二主
 }
 ```
 
-配置随应用发版更新。每次结果必须记录 `weightsVersion` 和 `templateId`，避免规则更新后旧分数失去来源。
+配置随应用发版更新。每次结果必须记录 `weightsVersion` 和 `templateId`，避免规则更新后旧分数失去来源。没有角色专属配置时不回退通用分，而是显示“暂无专属评分”。
 
 ## 7. 评分算法
 
@@ -649,6 +649,13 @@ localStorage
 - [WutheringWavesUID 评分实现](https://github.com/raared/WWUID/blob/master/WutheringWavesUID/utils/calculate.py)
 - [WutheringWavesUID 角色评分配置](https://github.com/raared/WWUID/tree/master/WutheringWavesUID/utils/map/character)
 - [ScoreEcho 截图评分交互](https://github.com/Loping151/ScoreEcho)
+
+当前实现状态：
+
+- 已实现 WWUID 的 COST 理论上限归一化、固定副主属性、技能占比和六档评级。
+- 已接入爱弥斯专属权重，并用理论满分样例验证为 `50.00 / SSS`。
+- Hiyuki 尚无当前 WWUID 公开配置，暂不评分。
+- 具体引用与许可边界见项目根目录 `NOTICE.md`。
 
 Build 数据来源：
 

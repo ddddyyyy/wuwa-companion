@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { parseUID, normalizeBuild, scoreEcho } from '../core.js';
+import { parseUID, normalizeBuild, scoreBuild, scoreEcho } from '../core.js';
+import { characterRules } from '../character-rules.js';
 
 test('accepts UID and exact WuWaBuilds profile URL only', () => {
   assert.equal(parseUID('701776400'), '701776400');
@@ -24,13 +25,21 @@ test('normalizes five matching echo panels', () => {
   assert.equal(build.echoes[0].cost, 4);
 });
 
-test('generic score is bounded and graded', () => {
-  const score = scoreEcho({ id: 'e', subStats: [
-    { type: 'Crit Rate', value: 10.5 }, { type: 'Crit DMG', value: 21 },
-    { type: 'ATK%', value: 11.6 }, { type: 'Basic Attack DMG Bonus', value: 11.6 },
-    { type: 'DEF%', value: 14.7 }
-  ] });
-  assert.equal(score.value, 38);
-  assert.equal(score.grade, 'S');
+test('matches WWUID Aemeath 4-cost normalization', () => {
+  const score = scoreEcho({
+    id: 'e', cost: 4, mainStat: { type: 'Crit DMG', value: 44 }, subStats: [
+      { type: 'Crit Rate', value: 10.5 }, { type: 'Crit DMG', value: 21 },
+      { type: 'ATK%', value: 11.6 }, { type: 'ATK', value: 60 },
+      { type: 'Resonance Liberation DMG Bonus', value: 11.6 }
+    ]
+  }, characterRules['1210']);
+  assert.equal(score.value, 50);
+  assert.equal(score.grade, 'SSS');
 });
 
+test('does not invent a score for an unconfigured character', () => {
+  assert.deepEqual(scoreBuild({ characterId: '1108', echoes: [] }), {
+    available: false,
+    reason: '该角色暂无国内专属权重配置'
+  });
+});
