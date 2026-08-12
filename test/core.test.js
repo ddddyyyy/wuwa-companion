@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { parseUID, normalizeBuild, scoreBuild, scoreEcho } from '../core.js';
-import { characterRules } from '../character-rules.js';
+import { parseUID, normalizeBuild, scoreBuild, scoreEcho, selectCharacterRule } from '../core.js';
+import { characterRuleSets, wwuidMeta } from '../character-rules.js';
 
 test('accepts UID and exact WuWaBuilds profile URL only', () => {
   assert.equal(parseUID('701776400'), '701776400');
@@ -32,9 +32,32 @@ test('matches WWUID Aemeath 4-cost normalization', () => {
       { type: 'ATK%', value: 11.6 }, { type: 'ATK', value: 60 },
       { type: 'Resonance Liberation DMG Bonus', value: 11.6 }
     ]
-  }, characterRules['1210']);
+  }, characterRuleSets['1210'].templates['calc.json']);
   assert.equal(score.value, 50);
   assert.equal(score.grade, 'SSS');
+});
+
+test('scores only the character matching elemental main stat', () => {
+  const rule = selectCharacterRule({ characterId: '1210', echoes: [] }).rule;
+  const echo = type => ({ id: 'e', cost: 3, mainStat: { type, value: 30 }, subStats: [] });
+  assert.equal(scoreEcho(echo('Fusion DMG'), rule).contributions[0].raw, 8.25);
+  assert.equal(scoreEcho(echo('Glacio DMG'), rule).contributions[0].raw, 0);
+});
+
+test('contains the complete pinned WWUID character configuration', () => {
+  assert.equal(wwuidMeta.commit, '1d0ed3b7bc640cdf05b9320e5d514227549bf0c2');
+  assert.equal(wwuidMeta.characterDirectories, 48);
+  assert.equal(wwuidMeta.templates, 49);
+  for (const ruleSet of Object.values(characterRuleSets)) {
+    assert.ok(ruleSet.templates[ruleSet.defaultTemplate]);
+  }
+});
+
+test('selects Phoebe scoring template from the equipped sonata', () => {
+  const build = { characterId: '1506', weaponId: 'w', sequence: 0, echoes: Array.from({ length: 5 }, (_, id) => ({ id, setId: 11 })) };
+  assert.equal(selectCharacterRule(build).templateName, '菲比-新光套');
+  build.echoes.forEach(echo => { echo.setId = 8; });
+  assert.equal(selectCharacterRule(build).templateName, '菲比-通用');
 });
 
 test('does not invent a score for an unconfigured character', () => {

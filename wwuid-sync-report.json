@@ -1,0 +1,10 @@
+{
+  "repository": "https://github.com/raared/WWUID.git",
+  "commit": "1d0ed3b7bc640cdf05b9320e5d514227549bf0c2",
+  "license": "GPL-3.0-only",
+  "characterDirectories": 48,
+  "characterIds": 51,
+  "templates": 49,
+  "conditions": 2,
+  "unmapped": []
+}

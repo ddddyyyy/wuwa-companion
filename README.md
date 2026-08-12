@@ -20,8 +20,18 @@ npm test
 
 ## 当前状态
 
-- 已完成：UID/Profile 地址校验、WuWaBuilds 同步、五件声骸归一化、本地缓存、WWUID 口径评分引擎、爱弥斯专属配置。
-- 下一步：继续补充角色专属配置、抽卡历史导入与保底分析。
+- 已完成：UID/Profile 地址校验、WuWaBuilds 同步、五件声骸归一化、本地缓存、WWUID 全角色评分配置与条件模板。
+- 下一步：抽卡历史导入与保底分析。
+
+## 更新 WWUID 评分配置
+
+评分配置固定在已审阅的上游 Commit。开发或发版时运行：
+
+```bash
+npm run sync:wwuid
+```
+
+普通用户启动应用时不会访问 GitHub。
 
 评分参考与许可说明见 [NOTICE](NOTICE.md)。没有专属配置的角色不会套用通用分数。
 

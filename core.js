@@ -1,4 +1,4 @@
-import { characterRules } from './character-rules.js';
+import { characterRuleSets, sonataNames } from './character-rules.js';
 
 export function parseUID(input) {
   const value = String(input ?? '').trim();
@@ -54,22 +54,51 @@ export function scoreEcho(echo, rule) {
   const raw = contributions.reduce((sum, item) => sum + item.raw, 0);
   const ratio = raw / rule.maxScoreByCost[echo.cost];
   const value = Math.floor(ratio * 50 * 100) / 100;
-  return { id: echo.id, value, grade: grade(ratio, rule.thresholds), contributions };
+  return { id: echo.id, value, grade: grade(ratio, rule.thresholdsByCost[echo.cost]), contributions };
 }
 
 export function scoreBuild(build) {
-  const rule = characterRules[build.characterId];
-  if (!rule) return { available: false, reason: '该角色暂无国内专属权重配置' };
+  const selected = selectCharacterRule(build);
+  if (!selected) return { available: false, reason: '该角色暂无国内专属权重配置' };
+  const { rule, templateName } = selected;
   const echoes = build.echoes.map(echo => scoreEcho(echo, rule));
   const total = echoes.reduce((sum, echo) => sum + echo.value, 0);
   return {
     available: true,
-    templateName: rule.templateName,
+    templateName,
     echoes,
     total,
-    grade: grade(total / 250, rule.thresholds),
+    grade: grade(total / 250, rule.totalThresholds),
     weakest: echoes.reduce((weakest, echo) => !weakest || echo.value < weakest.value ? echo : weakest, null)
   };
+}
+
+export function selectCharacterRule(build) {
+  const ruleSet = characterRuleSets[build.characterId];
+  if (!ruleSet) return null;
+  const setCounts = build.echoes.reduce((counts, echo) => {
+    counts[echo.setId] = (counts[echo.setId] || 0) + 1;
+    return counts;
+  }, {});
+  const dominantSet = Object.keys(setCounts).sort((a, b) => setCounts[b] - setCounts[a])[0];
+  const context = { ph: sonataNames[dominantSet], weaponId: build.weaponId, sequence: build.sequence };
+  const chosen = ruleSet.conditions.find(condition => matches(condition, context))?.choose || ruleSet.defaultTemplate;
+  const rule = { ...(ruleSet.templates[chosen] || ruleSet.templates[ruleSet.defaultTemplate]), attribute: ruleSet.attribute };
+  return { rule, templateName: rule.name || chosen };
+}
+
+function matches(condition, context) {
+  const actual = context[condition.key];
+  const expected = condition.value;
+  if (condition.op === '=') return actual === expected;
+  if (condition.op === '!=') return actual !== expected;
+  if (condition.op === 'in') return Array.isArray(expected) && expected.includes(actual);
+  if (condition.op === '!in') return Array.isArray(expected) && !expected.includes(actual);
+  if (condition.op === '>') return Number(actual) > Number(expected);
+  if (condition.op === '>=') return Number(actual) >= Number(expected);
+  if (condition.op === '<') return Number(actual) < Number(expected);
+  if (condition.op === '<=') return Number(actual) <= Number(expected);
+  return false;
 }
 
 function contribution(stat, weights, rule) {
