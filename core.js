@@ -89,6 +89,36 @@ export function scoreBuild(build) {
   };
 }
 
+export function compareBuild(current, previous) {
+  if (!previous) return null;
+  const currentScore = scoreBuild(current);
+  const previousScore = scoreBuild(previous);
+  const previousById = new Map(previous.echoes.map((echo, index) => [echo.id, { echo, score: previousScore.echoes?.[index] }]));
+  const currentIds = new Set(current.echoes.map(echo => echo.id));
+  const used = new Set();
+  const echoes = [];
+  current.echoes.forEach((echo, index) => {
+    let before = previousById.get(echo.id);
+    if (before && echoSignature(echo) === echoSignature(before.echo)) { used.add(echo.id); return; }
+    if (!before) {
+      const candidate = previous.echoes.find(item => !used.has(item.id) && !currentIds.has(item.id) && item.cost === echo.cost);
+      before = candidate && previousById.get(candidate.id);
+    }
+    if (before) used.add(before.echo.id);
+    echoes.push({ before: before?.echo, after: echo, beforeScore: before?.score, afterScore: currentScore.echoes?.[index] });
+  });
+  return {
+    delta: currentScore.available && previousScore.available ? currentScore.total - previousScore.total : null,
+    weaponChanged: current.weaponId !== previous.weaponId || current.weaponLevel !== previous.weaponLevel || current.weaponRank !== previous.weaponRank,
+    echoes,
+    changed: current.weaponId !== previous.weaponId || current.weaponLevel !== previous.weaponLevel || current.weaponRank !== previous.weaponRank || echoes.length > 0
+  };
+}
+
+function echoSignature(echo) {
+  return JSON.stringify([echo.level, echo.setId, echo.mainStat, echo.subStats]);
+}
+
 export function selectCharacterRule(build) {
   const ruleSet = characterRuleSets[build.characterId];
   if (!ruleSet) return null;

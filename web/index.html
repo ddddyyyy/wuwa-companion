@@ -13,7 +13,7 @@
       <button type="button" class="active" data-view="build"><i>◆</i>角色与声骸</button>
       <button type="button" data-view="gacha"><i>✦</i>抽卡分析</button>
     </nav>
-    <p class="source">评分配置来自 WWUID<br>数据来自 WuWaBuilds</p>
+    <div class="source"><p>评分配置来自 WWUID<br>数据来自 WuWaBuilds</p><button id="rule-update" type="button">正在检查评分配置…</button></div>
   </aside>
   <main id="build-view">
     <section class="controls">
@@ -31,6 +31,7 @@
         <p id="status" role="status">数据保存在本机，不需要登录游戏账号</p>
       </form>
       <section id="overview" aria-live="polite"></section>
+      <section id="build-diff" aria-live="polite"></section>
       <section id="roster" aria-label="选择角色"></section>
     </section>
     <section id="builds" aria-live="polite"></section>

@@ -17,6 +17,8 @@
 - 通过 UID 同步 WuWaBuilds 公开角色 Build
 - 展示角色、武器、技能、面板和五件声骸
 - 按国内 WWUID 评分配置标记有效词条、声骸等级和优化目标
+- 对比前后两次同步的评分、武器和声骸变化
+- 自动检查 WWUID 上游评分配置版本并提示更新
 - 自动识别 Windows、macOS 和 Linux 的常见游戏路径，提取抽卡链接
 - 内嵌 WuWa Tracker 导入与抽卡分析页面
 - 纯 Node.js 和原生 Web 实现，无 npm 运行时依赖
@@ -51,7 +53,7 @@ npm start
 
 ## 数据与隐私
 
-- WuWaBuilds 数据通过其公开 API 读取，并在内存中短暂缓存。
+- WuWaBuilds 数据通过其公开 API 读取，每次点击同步都会获取最新 Build。
 - 抽卡链接只从本机日志读取、返回给本地页面并尝试复制到剪贴板，本项目不会将其写入磁盘。
 - 抽卡数据由 WuWa Tracker 管理；向其粘贴链接时适用 WuWa Tracker 的隐私政策。
 - 本项目不需要游戏账号密码，也不会修改游戏文件。
@@ -68,7 +70,7 @@ npm test
 npm run sync:wwuid
 ```
 
-普通用户启动应用时不会访问 GitHub。评分参考和第三方许可见 [NOTICE](NOTICE.md)，设计说明见 [docs/build-card-echo-scoring-design.md](docs/build-card-echo-scoring-design.md)。
+普通用户启动时只会检查 GitHub 上的 WWUID 版本，不会自动改写本地评分配置。评分参考和第三方许可见 [NOTICE](NOTICE.md)，设计说明见 [docs/build-card-echo-scoring-design.md](docs/build-card-echo-scoring-design.md)。
 
 ## 许可与声明
 

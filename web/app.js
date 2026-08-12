@@ -1,4 +1,4 @@
-import { scoreBuild, selectCharacterRule } from '/core.js';
+import { compareBuild, scoreBuild, selectCharacterRule } from '/core.js';
 import { characterNames, weaponNames } from '/character-rules.js';
 
 const form = document.querySelector('#profile-form');
@@ -6,6 +6,7 @@ const input = document.querySelector('#profile');
 const button = document.querySelector('#refresh');
 const status = document.querySelector('#status');
 const overview = document.querySelector('#overview');
+const buildDiff = document.querySelector('#build-diff');
 const roster = document.querySelector('#roster');
 const builds = document.querySelector('#builds');
 const navButtons = document.querySelectorAll('nav button[data-view]');
@@ -16,7 +17,9 @@ const conveneButton = document.querySelector('#convene-refresh');
 const conveneStatus = document.querySelector('#convene-status');
 const conveneCopy = document.querySelector('#convene-copy');
 const conveneURL = document.querySelector('#convene-url');
+const ruleUpdate = document.querySelector('#rule-update');
 let currentBuilds = [];
+let previousBuilds = [];
 let selectedCharacterId;
 const skillNames = ['常态', '技能', '解放', '变奏', '回路', '延奏'];
 const statNames = {
@@ -31,6 +34,7 @@ const percentageStats = new Set(Object.keys(statNames).filter(name => name.inclu
 const trackerPlatform = /mac/i.test(navigator.platform) ? 'macos' : /win/i.test(navigator.platform) ? 'windows' : 'linux';
 trackerPlatformLabel.textContent = trackerPlatform === 'macos' ? 'macOS' : trackerPlatform === 'windows' ? 'Windows' : 'Linux';
 let triedConveneLink = false;
+checkRuleUpdate();
 
 navButtons.forEach(item => item.addEventListener('click', () => {
   navButtons.forEach(button => button.classList.toggle('active', button === item));
@@ -43,6 +47,8 @@ navButtons.forEach(item => item.addEventListener('click', () => {
 }));
 
 const stored = JSON.parse(localStorage.getItem('wuwa-builds') || 'null');
+const previousStored = JSON.parse(localStorage.getItem('wuwa-builds-previous') || 'null');
+if (previousStored?.uid === stored?.uid) previousBuilds = previousStored.builds || [];
 if (stored?.uid) {
   input.value = stored.uid;
   if (stored.builds?.every(build => build.characterLevel != null && build.weaponLevel != null && build.stats && build.echoes?.every(echo => echo.resourceId))) {
@@ -62,10 +68,18 @@ form.addEventListener('submit', async event => {
     const response = await fetch(`/api/builds?profile=${encodeURIComponent(input.value)}`);
     const data = await response.json();
     if (!response.ok) throw new Error(data.error || '同步失败');
+    const old = JSON.parse(localStorage.getItem('wuwa-builds') || 'null');
+    if (old?.uid === data.uid && JSON.stringify(old.builds) !== JSON.stringify(data.builds)) {
+      localStorage.setItem('wuwa-builds-previous', JSON.stringify(old));
+      previousBuilds = old.builds || [];
+    } else if (old?.uid !== data.uid) {
+      localStorage.removeItem('wuwa-builds-previous');
+      previousBuilds = [];
+    }
     localStorage.setItem('wuwa-builds', JSON.stringify(data));
     input.value = data.uid;
     render(data.builds);
-    status.textContent = data.builds.length ? `已同步 ${data.builds.length} 个角色${data.cached ? '（缓存）' : ''}` : '这个 UID 暂无公开 Build';
+    status.textContent = data.builds.length ? `已同步 ${data.builds.length} 个角色` : '这个 UID 暂无公开 Build';
   } catch (error) {
     status.textContent = error.message;
   } finally {
@@ -141,6 +155,39 @@ roster.addEventListener('click', event => {
 function showSelected() {
   const build = currentBuilds.find(item => item.characterId === selectedCharacterId);
   builds.replaceChildren(buildCard(build));
+  renderDifference(build);
+}
+
+function renderDifference(build) {
+  const previous = previousBuilds.find(item => item.characterId === build.characterId);
+  const difference = compareBuild(build, previous);
+  if (!difference) {
+    buildDiff.innerHTML = '<small>BUILD 对比</small><p>下次同步新 Build 后显示变化</p>';
+    return;
+  }
+  const delta = difference.delta == null ? '' : `${difference.delta >= 0 ? '+' : ''}${number(difference.delta)} 分`;
+  const changes = [];
+  if (difference.weaponChanged) changes.push(`武器：${weaponLabel(previous)} → ${weaponLabel(build)}`);
+  changes.push(...difference.echoes.map(item => `C${item.after.cost} ${item.before?.name || '旧声骸'} → ${item.after.name || '新声骸'}${item.beforeScore && item.afterScore ? `（${number(item.beforeScore.value)} → ${number(item.afterScore.value)}）` : ''}`));
+  buildDiff.innerHTML = `<div><small>较上次同步</small><strong class="${difference.delta >= 0 ? 'positive' : 'negative'}">${delta || (difference.changed ? 'Build 已变化' : '无变化')}</strong></div>${changes.length ? `<ul>${changes.map(item => `<li>${escapeHTML(item)}</li>`).join('')}</ul>` : '<p>装备与声骸没有变化</p>'}`;
+}
+
+function weaponLabel(build) {
+  return `${build.weaponName || weaponNames[build.weaponId] || '未知武器'} R${build.weaponRank || '—'}`;
+}
+
+ruleUpdate.addEventListener('click', () => ruleUpdate.dataset.url ? window.open(ruleUpdate.dataset.url, '_blank', 'noopener') : checkRuleUpdate());
+async function checkRuleUpdate() {
+  try {
+    const response = await fetch('/api/scoring-update');
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || '检查失败');
+    ruleUpdate.textContent = data.available ? '发现新的评分配置 ↗' : '评分配置已是最新';
+    if (data.available) ruleUpdate.dataset.url = data.url;
+  } catch (error) {
+    ruleUpdate.textContent = '评分配置检查失败，点击重试';
+    ruleUpdate.title = error.message;
+  }
 }
 
 function buildCard(build) {

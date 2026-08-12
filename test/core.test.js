@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { parseUID, normalizeBuild, scoreBuild, scoreEcho, selectCharacterRule } from '../core.js';
+import { compareBuild, parseUID, normalizeBuild, scoreBuild, scoreEcho, selectCharacterRule } from '../core.js';
 import { characterRuleSets, wwuidMeta } from '../character-rules.js';
 import { candidateLogPaths, extractConveneURL, trackerPlatform } from '../convene-link.js';
 
@@ -81,4 +81,15 @@ test('extracts raw and XOR-obfuscated convene links', () => {
   assert.equal(extractConveneURL(encoded), url);
   assert.equal(trackerPlatform('darwin'), 'macos');
   assert.match(candidateLogPaths('darwin', '/Users/test')[0], /com\.kurogame\.wutheringwaves\.global/);
+});
+
+test('compares score, weapon and replaced echoes with the previous build', () => {
+  const echo = (id, value = 6.4) => ({ id, cost: 1, level: 25, setId: 1, mainStat: { type: 'ATK%', value: 18 }, subStats: [{ type: 'Crit Rate', value }] });
+  const previous = { characterId: '1102', weaponId: 'old', weaponLevel: 90, weaponRank: 1, sequence: 0, echoes: [echo('1'), echo('2'), echo('3'), echo('4'), echo('5')] };
+  const current = { ...previous, weaponId: 'new', echoes: [echo('6', 10.5), ...previous.echoes.slice(1)] };
+  const difference = compareBuild(current, previous);
+  assert.equal(difference.weaponChanged, true);
+  assert.equal(difference.echoes.length, 1);
+  assert.equal(difference.echoes[0].before.id, '1');
+  assert.ok(difference.delta > 0);
 });

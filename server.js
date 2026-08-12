@@ -4,13 +4,14 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { parseUID, normalizeBuild } from './core.js';
 import { findConveneLink, trackerPlatform } from './convene-link.js';
+import { wwuidMeta } from './character-rules.js';
 
 const root = dirname(fileURLToPath(import.meta.url));
 const port = Number(process.env.PORT || 4173);
 const apiOrigin = 'https://api.wuwa.build';
 const resourceOrigin = 'https://ww1.loping151.top';
-const cache = new Map();
 const resourceCache = new Map();
+let scoringUpdateCache;
 const staticFiles = new Map([
   ['/', ['web/index.html', 'text/html; charset=utf-8']],
   ['/app.js', ['web/app.js', 'text/javascript; charset=utf-8']],
@@ -42,8 +43,6 @@ async function resourceJSON(path) {
 
 export async function loadLatestBuilds(input) {
   const uid = parseUID(input);
-  const cached = cache.get(uid);
-  if (cached && Date.now() - cached.time < 300_000) return { ...cached.data, cached: true };
 
   const summaries = [];
   let page = 1;
@@ -76,8 +75,22 @@ export async function loadLatestBuilds(input) {
     builds.push(build);
   }
   const data = { uid, builds, syncedAt: new Date().toISOString() };
-  cache.set(uid, { time: Date.now(), data });
-  return { ...data, cached: false };
+  return data;
+}
+
+export async function checkScoringUpdate() {
+  if (scoringUpdateCache && Date.now() - scoringUpdateCache.time < 3_600_000) return scoringUpdateCache.data;
+  const response = await fetch('https://api.github.com/repos/raared/WWUID/commits/master', {
+    headers: { accept: 'application/vnd.github+json', 'user-agent': 'wuwa-companion' }, redirect: 'manual', signal: AbortSignal.timeout(10_000)
+  });
+  if (!response.ok) throw new Error(`评分配置检查失败（HTTP ${response.status}）`);
+  const value = await response.json();
+  if (!/^[a-f0-9]{40}$/.test(value?.sha) || !/^https:\/\/github\.com\/raared\/WWUID\/commit\/[a-f0-9]{40}$/.test(value?.html_url)) {
+    throw new Error('WWUID 版本信息格式已变化');
+  }
+  const data = { current: wwuidMeta.commit, latest: value.sha, available: value.sha !== wwuidMeta.commit, url: value.html_url };
+  scoringUpdateCache = { time: Date.now(), data };
+  return data;
 }
 
 export const server = createServer(async (request, response) => {
@@ -93,6 +106,9 @@ export const server = createServer(async (request, response) => {
       } catch (error) {
         return sendJSON(response, 404, { platform: trackerPlatform(), error: error.message });
       }
+    }
+    if (request.method === 'GET' && url.pathname === '/api/scoring-update') {
+      return sendJSON(response, 200, await checkScoringUpdate());
     }
     if (request.method !== 'GET') return sendJSON(response, 405, { error: '不支持这个请求' });
     const file = staticFiles.get(url.pathname);

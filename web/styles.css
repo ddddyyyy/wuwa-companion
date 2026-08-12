@@ -24,7 +24,10 @@ nav button { display: flex; align-items: center; gap: 10px; min-height: 52px; bo
 nav button i { width: 18px; font-size: 15px; font-style: normal; text-align: center; }
 nav button small { display: block; margin-left: auto; color: #566069; font-size: 7px; }
 nav .active { border-color: rgba(215,189,120,.22); color: var(--gold); background: linear-gradient(145deg, rgba(215,189,120,.16), rgba(215,189,120,.02)); }
-.source { display: block; margin: auto 4px 0; color: #485159; font-size: 8px; line-height: 1.7; }
+.source { display: grid; gap: 6px; margin: auto 4px 0; color: #485159; font-size: 8px; line-height: 1.7; }
+.source p { margin: 0; }
+.source button { border: 0; padding: 0; color: #656f77; background: none; font-size: 8px; text-align: left; cursor: pointer; }
+.source button:hover { color: var(--gold); }
 main { min-width: 0; height: 100vh; display: grid; grid-template-columns: clamp(340px, 31vw, 480px) minmax(0, 1fr); overflow: hidden; }
 .controls { min-width: 0; display: flex; flex-direction: column; gap: 15px; padding: clamp(24px, 4vh, 44px) clamp(24px, 3vw, 46px) 22px; border-right: 1px solid var(--line); background: rgba(9,12,16,.72); }
 header { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; }
@@ -49,6 +52,14 @@ input:focus { border-color: #9d864d; box-shadow: 0 0 0 3px rgba(215,189,120,.08)
 #overview small { color: #6f7981; font-size: 8px; }
 #overview strong { font-size: 16px; }
 #overview em { color: #68727a; font-size: 8px; font-style: normal; }
+#build-diff { display: grid; gap: 7px; border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; background: #10151a; }
+#build-diff:empty { display: none; }
+#build-diff > div { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+#build-diff small { color: #747f86; font-size: 8px; }
+#build-diff strong { color: #b9c0c4; font-size: 11px; }
+#build-diff .positive { color: #75c98d; } #build-diff .negative { color: #ee756e; }
+#build-diff p, #build-diff ul { margin: 0; color: #69737a; font-size: 8px; line-height: 1.55; }
+#build-diff ul { max-height: 70px; overflow-y: auto; padding-left: 14px; scrollbar-width: thin; }
 #roster { min-height: 0; display: flex; flex-direction: column; }
 #roster:empty { display: none; }
 .roster-label { display: flex; align-items: baseline; gap: 8px; margin-bottom: 8px; }
