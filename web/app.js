@@ -10,7 +10,7 @@ const roster = document.querySelector('#roster');
 const builds = document.querySelector('#builds');
 let currentBuilds = [];
 let selectedCharacterId;
-const skillNames = ['常态', '技能', '解放', '变奏', '回路'];
+const skillNames = ['常态', '技能', '解放', '变奏', '回路', '延奏'];
 const statNames = {
   HP: '生命', 'HP%': '生命百分比', ATK: '攻击', 'ATK%': '攻击百分比', DEF: '防御', 'DEF%': '防御百分比',
   'Crit Rate': '暴击', 'Crit DMG': '暴击伤害', 'Energy Regen': '共鸣效率', 'Healing Bonus': '治疗效果加成',
@@ -91,17 +91,19 @@ function buildCard(build) {
   const echoScores = score.available ? score.echoes : build.echoes.map(() => null);
   const rule = selectCharacterRule(build)?.rule;
   const stats = visibleStats(build, rule);
+  const forte = [...(build.forte || []), 1];
   const characterArt = asset('role_pile', `role_pile_${build.characterId}.png`);
   const weaponArt = asset('waves_weapon', `weapon_${build.weaponId}.png`);
   article.innerHTML = `
     <div class="profile-panel">
-      <div class="character-art"><img src="${characterArt}" alt="" loading="lazy"><div class="character-title"><span>LV.${build.characterLevel || '—'}</span><h3>${escapeHTML(character)}</h3></div>
-        <div class="skills"><b>共鸣链 ${build.sequence}</b>${(build.forte || []).map((level, index) => `<span><i>${skillNames[index] || index + 1}</i>${level}</span>`).join('')}</div>
+      <div class="character-title"><span>LV.${build.characterLevel || '—'}</span><h3>${escapeHTML(character)}</h3></div>
+      <div class="character-art"><img src="${characterArt}" alt="" loading="lazy">
+        <div class="skills"><b>共鸣链 ${build.sequence}</b>${forte.map((level, index) => `<span><i>${skillNames[index]}</i>${level}</span>`).join('')}</div>
       </div>
-      <div class="stat-panel"><div class="panel-label">声骸词条合计 <small>${escapeHTML(score.templateName || '暂无权重')}</small></div>${stats.map(([name, value, tone]) => `<div class="stat-row ${tone}"><span>${escapeHTML(statNames[name] || name)}</span><strong>${formatStat(name, value)}</strong></div>`).join('')}</div>
+      <div class="stat-panel"><div class="panel-label"><b>声骸词条合计</b><small>默认角色权重 1</small></div>${stats.map(([name, value, tone]) => `<div class="stat-row ${tone}"><span>${escapeHTML(statNames[name] || name)}</span><strong>${formatStat(name, value)}</strong></div>`).join('')}</div>
     </div>
     <div class="equipment-row"><div class="weapon-card"><img src="${weaponArt}" alt="" loading="lazy"><div><strong>${escapeHTML(weapon)}</strong><span>LV.${build.weaponLevel || '—'} · 谐振 ${build.weaponRank || '—'} 阶</span></div></div><div class="total">${rating}</div></div>
-    ${score.available ? `<div class="progress"><span>综合养成度</span><strong>${score.grade}</strong><i><b style="width:${Math.min(score.total / 250 * 100, 100)}%"></b></i><em>${number(score.total / 250 * 100)}%</em></div>` : ''}
+    ${score.available ? `<div class="progress"><span>经初步评估，你的声骸评价：</span><strong>${score.grade}</strong><i><b style="width:${Math.min(score.total / 250 * 100, 100)}%"></b></i><em>${number(score.total / 250 * 100)}%</em></div>` : ''}
     <div class="echoes">${build.echoes.map((echo, index) => echoCard(echo, echoScores[index])).join('')}</div>
     ${score.available ? `<p class="weakest"><span>优化建议</span> 优先检查 ${score.weakest.grade} 级声骸（${number(score.weakest.value)} 分）</p>` : ''}`;
   return article;
