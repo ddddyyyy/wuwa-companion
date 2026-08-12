@@ -33,7 +33,23 @@ export function normalizeBuild(detail) {
   return {
     id: detail.id, uid: detail.owner.uid, username: detail.owner.username,
     characterId: detail.character.id, weaponId: detail.weapon.id,
-    sequence: detail.sequence, cv: detail.cv, timestamp: detail.timestamp, echoes
+    characterLevel: detail.buildState.characterLevel,
+    weaponLevel: detail.weapon.level,
+    weaponRank: detail.weapon.rank,
+    forte: detail.buildState.forte?.map(item => Number(item[0])) || [],
+    sequence: detail.sequence, cv: detail.cv, timestamp: detail.timestamp,
+    stats: {
+      HP: detail.statHP, 'HP%': detail.statHPPct, ATK: detail.statATK, 'ATK%': detail.statATKPct,
+      DEF: detail.statDEF, 'DEF%': detail.statDEFPct, 'Crit Rate': detail.statCritRate,
+      'Crit DMG': detail.statCritDmg, 'Energy Regen': detail.statEnergyRegen,
+      'Healing Bonus': detail.statHealingBonus, 'Aero DMG': detail.statAeroDmg,
+      'Glacio DMG': detail.statGlacioDmg, 'Fusion DMG': detail.statFusionDmg,
+      'Electro DMG': detail.statElectroDmg, 'Havoc DMG': detail.statHavocDmg,
+      'Spectro DMG': detail.statSpectroDmg, 'Basic Attack DMG Bonus': detail.statBasicAttackDmg,
+      'Heavy Attack DMG Bonus': detail.statHeavyAttackDmg, 'Resonance Skill DMG Bonus': detail.statResonanceSkillDmg,
+      'Resonance Liberation DMG Bonus': detail.statResonanceLiberationDmg
+    },
+    echoes
   };
 }
 

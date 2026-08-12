@@ -17,12 +17,14 @@ test('normalizes five matching echo panels', () => {
   const pairs = [panel('1', 'Crit DMG', 4), panel('2', 'ATK%', 3), panel('3', 'ATK%', 3), panel('4', 'ATK%', 1), panel('5', 'ATK%', 1)];
   const build = normalizeBuild({
     id: 'b', owner: { uid: '701776400', username: 'u' }, character: { id: 'c' }, weapon: { id: 'w' },
-    sequence: 0, cv: 200, timestamp: '2026-01-01T00:00:00Z',
+    sequence: 0, cv: 200, timestamp: '2026-01-01T00:00:00Z', statATK: 2200, statCritRate: 70,
+    buildState: { characterLevel: 90, forte: [[10], [9]], echoPanels: pairs.map(item => item.panel) },
     echoSummary: { mainStats: pairs.map(item => item.main) },
-    buildState: { echoPanels: pairs.map(item => item.panel) }
   });
   assert.equal(build.echoes.length, 5);
   assert.equal(build.echoes[0].cost, 4);
+  assert.equal(build.characterLevel, 90);
+  assert.equal(build.stats.ATK, 2200);
 });
 
 test('matches WWUID Aemeath 4-cost normalization', () => {
