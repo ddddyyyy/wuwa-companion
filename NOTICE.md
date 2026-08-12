@@ -6,6 +6,7 @@
 - 算法文件：`WutheringWavesUID/utils/calculate.py`
 - 角色配置：`WutheringWavesUID/utils/map/character/`
 - 固定版本：`1d0ed3b7bc640cdf05b9320e5d514227549bf0c2`
+- 绯雪配置：持续维护的 [XutheringWavesUID](https://github.com/Loping151/XutheringWavesUID) 公开评分资源
 
 本项目按 GPL-3.0-only 分发，完整许可文本见 `LICENSE`。同步器只引入评分配置和许可文本，不引入机器人、图片识别或框架代码。
 

@@ -5,6 +5,7 @@ import { join, resolve } from 'node:path';
 
 const commit = '1d0ed3b7bc640cdf05b9320e5d514227549bf0c2';
 const repository = 'https://github.com/raared/WWUID.git';
+const currentResource = 'https://ww1.loping151.top/XutheringWavesUID/resource/map/character';
 const root = resolve(import.meta.dirname, '..');
 const sourceOption = process.argv.indexOf('--source');
 let source = sourceOption >= 0 ? resolve(process.argv[sourceOption + 1] || '') : null;
@@ -70,9 +71,19 @@ async function sync(sourceRoot) {
   }
 
   characterNames['1108'] ||= 'Hiyuki';
+  const hiyukiResponse = await fetch(`${currentResource}/1108/calc.json`, { signal: AbortSignal.timeout(15_000) });
+  if (hiyukiResponse.ok) {
+    characterNames['1108'] = '绯雪';
+    ruleSets['1108'] = {
+      characterName: '绯雪', attribute: 'Glacio', defaultTemplate: 'calc.json',
+      templates: { 'calc.json': convert(await hiyukiResponse.json()) }, conditions: []
+    };
+    templateCount += 1;
+  }
   const meta = {
     repository,
     commit,
+    currentResource,
     license: 'GPL-3.0-only',
     characterDirectories: new Set(Object.values(ruleSets).map(rule => rule.characterName)).size,
     characterIds: Object.keys(ruleSets).length,

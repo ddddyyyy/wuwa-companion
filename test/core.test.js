@@ -48,8 +48,8 @@ test('scores only the character matching elemental main stat', () => {
 
 test('contains the complete pinned WWUID character configuration', () => {
   assert.equal(wwuidMeta.commit, '1d0ed3b7bc640cdf05b9320e5d514227549bf0c2');
-  assert.equal(wwuidMeta.characterDirectories, 48);
-  assert.equal(wwuidMeta.templates, 49);
+  assert.equal(wwuidMeta.characterDirectories, 49);
+  assert.equal(wwuidMeta.templates, 50);
   for (const ruleSet of Object.values(characterRuleSets)) {
     assert.ok(ruleSet.templates[ruleSet.defaultTemplate]);
   }
@@ -62,9 +62,8 @@ test('selects Phoebe scoring template from the equipped sonata', () => {
   assert.equal(selectCharacterRule(build).templateName, '菲比-通用');
 });
 
-test('does not invent a score for an unconfigured character', () => {
-  assert.deepEqual(scoreBuild({ characterId: '1108', echoes: [] }), {
-    available: false,
-    reason: '该角色暂无国内专属权重配置'
-  });
+test('uses the current domestic Hiyuki scoring configuration', () => {
+  const selected = selectCharacterRule({ characterId: '1108', echoes: [] });
+  assert.equal(selected.rule.name, '绯雪-通用');
+  assert.equal(selected.rule.attribute, 'Glacio');
 });

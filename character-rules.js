@@ -2,10 +2,11 @@
 export const wwuidMeta = {
   "repository": "https://github.com/raared/WWUID.git",
   "commit": "1d0ed3b7bc640cdf05b9320e5d514227549bf0c2",
+  "currentResource": "https://ww1.loping151.top/XutheringWavesUID/resource/map/character",
   "license": "GPL-3.0-only",
-  "characterDirectories": 48,
-  "characterIds": 51,
-  "templates": 49,
+  "characterDirectories": 49,
+  "characterIds": 52,
+  "templates": 50,
   "conditions": 2,
   "unmapped": []
 };
@@ -530,6 +531,99 @@ export const characterRuleSets = {
           "1": 78.516,
           "3": 82.066,
           "4": 86.066
+        },
+        "thresholdsByCost": {
+          "1": [
+            0,
+            0.48,
+            0.6,
+            0.7,
+            0.78,
+            0.84
+          ],
+          "3": [
+            0,
+            0.48,
+            0.6,
+            0.7,
+            0.78,
+            0.84
+          ],
+          "4": [
+            0,
+            0.48,
+            0.6,
+            0.7,
+            0.78,
+            0.84
+          ]
+        },
+        "totalThresholds": [
+          0,
+          0.48,
+          0.6,
+          0.7,
+          0.78,
+          0.84
+        ]
+      }
+    },
+    "conditions": []
+  },
+  "1108": {
+    "characterName": "绯雪",
+    "attribute": "Glacio",
+    "defaultTemplate": "calc.json",
+    "templates": {
+      "calc.json": {
+        "name": "绯雪-通用",
+        "mainWeights": {
+          "1": {
+            "ATK%": 0.7,
+            "HP": 0,
+            "HP%": 0,
+            "DEF%": 0
+          },
+          "3": {
+            "ATK": 0.025,
+            "ATK%": 0.3,
+            "HP%": 0,
+            "DEF%": 0,
+            "Energy Regen": 0,
+            "AttributeDMG": 0.3
+          },
+          "4": {
+            "ATK": 0.02,
+            "ATK%": 0.32,
+            "HP%": 0,
+            "DEF%": 0,
+            "Crit Rate": 0.36,
+            "Crit DMG": 0.24,
+            "Healing Bonus": 0
+          }
+        },
+        "subWeights": {
+          "ATK": 0.13,
+          "ATK%": 1.4,
+          "HP": 0,
+          "HP%": 0,
+          "DEF": 0,
+          "DEF%": 0,
+          "Crit Rate": 1.5,
+          "Crit DMG": 1,
+          "SkillDMG": 0.8,
+          "Energy Regen": 0.25
+        },
+        "skillWeights": {
+          "Basic Attack DMG Bonus": 0,
+          "Heavy Attack DMG Bonus": 0,
+          "Resonance Skill DMG Bonus": 0,
+          "Resonance Liberation DMG Bonus": 1
+        },
+        "maxScoreByCost": {
+          "1": 82.669,
+          "3": 81.57,
+          "4": 83.628
         },
         "thresholdsByCost": {
           "1": [
@@ -4865,7 +4959,7 @@ export const characterNames = {
   "1105": "折枝",
   "1106": "釉瑚",
   "1107": "珂莱塔",
-  "1108": "Hiyuki",
+  "1108": "绯雪",
   "1202": "炽霞",
   "1203": "安可",
   "1204": "莫特斐",

@@ -1,10 +1,11 @@
 {
   "repository": "https://github.com/raared/WWUID.git",
   "commit": "1d0ed3b7bc640cdf05b9320e5d514227549bf0c2",
+  "currentResource": "https://ww1.loping151.top/XutheringWavesUID/resource/map/character",
   "license": "GPL-3.0-only",
-  "characterDirectories": 48,
-  "characterIds": 51,
-  "templates": 49,
+  "characterDirectories": 49,
+  "characterIds": 52,
+  "templates": 50,
   "conditions": 2,
   "unmapped": []
 }
