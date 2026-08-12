@@ -5,6 +5,7 @@ import { dirname, join } from 'node:path';
 import { parseUID, normalizeBuild } from './core.js';
 import { findConveneLink, trackerPlatform } from './convene-link.js';
 import { wwuidMeta } from './character-rules.js';
+import { echoScannerStatus, scanMacEchoes } from './echo-scanner.js';
 
 const root = dirname(fileURLToPath(import.meta.url));
 const port = Number(process.env.PORT || 4173);
@@ -110,6 +111,13 @@ export const server = createServer(async (request, response) => {
     if (request.method === 'GET' && url.pathname === '/api/scoring-update') {
       return sendJSON(response, 200, await checkScoringUpdate());
     }
+    if (request.method === 'GET' && url.pathname === '/api/echo-scanner') {
+      return sendJSON(response, 200, await echoScannerStatus());
+    }
+    if (request.method === 'POST' && url.pathname === '/api/echo-scan') {
+      const input = await readJSON(request);
+      return sendJSON(response, 200, await scanMacEchoes(input.limit == null || input.limit === '' ? 0 : Number(input.limit)));
+    }
     if (request.method !== 'GET') return sendJSON(response, 405, { error: '不支持这个请求' });
     const file = staticFiles.get(url.pathname);
     if (!file) return sendJSON(response, 404, { error: '页面不存在' });
@@ -123,6 +131,15 @@ export const server = createServer(async (request, response) => {
 function sendJSON(response, status, value) {
   response.writeHead(status, { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store' });
   response.end(JSON.stringify(value));
+}
+
+async function readJSON(request) {
+  let body = '';
+  for await (const chunk of request) {
+    body += chunk;
+    if (body.length > 4096) throw new Error('请求内容过大');
+  }
+  try { return body ? JSON.parse(body) : {}; } catch { throw new Error('请求内容不是有效 JSON'); }
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {

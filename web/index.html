@@ -11,6 +11,7 @@
     <div class="brand"><span>W</span><div><h1>鸣潮管家</h1><small>WuWa Companion</small></div></div>
     <nav aria-label="功能">
       <button type="button" class="active" data-view="build"><i>◆</i>角色与声骸</button>
+      <button type="button" data-view="inventory"><i>▦</i>声骸仓库<small>macOS</small></button>
       <button type="button" data-view="gacha"><i>✦</i>抽卡分析</button>
     </nav>
     <div class="source"><p>评分配置来自 WWUID<br>数据来自 WuWaBuilds</p><button id="rule-update" type="button">正在检查评分配置…</button></div>
@@ -49,6 +50,29 @@
         <div id="convene-copy" hidden><input id="convene-url" type="password" readonly aria-label="已提取的抽卡链接"><button id="convene-copy-button" type="button">复制链接</button></div>
       </header>
       <iframe id="tracker-frame" title="WuWa Tracker 抽卡分析" src="https://wuwatracker.com/zh-CN/tracker" referrerpolicy="no-referrer" allow="clipboard-read; clipboard-write"></iframe>
+    </section>
+  </main>
+  <main id="inventory-view" hidden>
+    <section class="inventory-shell">
+      <header>
+        <div><p class="eyebrow">ECHO INVENTORY</p><h2>声骸仓库</h2><p class="lead">从 macOS 鸣潮窗口读取声骸，数据只保存在本机。</p></div>
+        <button id="inventory-export" class="external" type="button" disabled>导出 JSON</button>
+      </header>
+      <div class="inventory-top">
+        <form id="echo-scan-form" class="scanner-card">
+          <label for="echo-count">要扫描的声骸数量</label>
+          <div class="scan-row"><input id="echo-count" type="number" min="1" max="2000" placeholder="留空自动识别"><button id="echo-scan" type="submit">开始扫描</button></div>
+          <p id="echo-scan-status" role="status">先在游戏中打开“背包 → 声骸”，滚动到列表顶部。</p>
+          <button id="echo-scanner-check" class="quiet-button" type="button">检查游戏与系统权限</button>
+        </form>
+        <section class="scan-guide">
+          <strong>扫描前准备</strong>
+          <ol><li>使用简体中文，将游戏设为全屏或无边框。</li><li>打开声骸仓库并回到第一页。</li><li>扫描期间不要移动鼠标；按 Esc 可中止。</li></ol>
+          <small>首次使用会请求“屏幕录制”和“辅助功能”权限。</small>
+        </section>
+      </div>
+      <section id="inventory-summary" aria-live="polite"></section>
+      <section id="inventory-list" aria-live="polite"><div class="empty">还没有扫描声骸</div></section>
     </section>
   </main>
   <script type="module" src="/app.js"></script>

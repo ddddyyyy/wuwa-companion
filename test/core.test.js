@@ -3,11 +3,12 @@ import assert from 'node:assert/strict';
 import { compareBuild, parseUID, normalizeBuild, scoreBuild, scoreEcho, selectCharacterRule } from '../core.js';
 import { characterRuleSets, wwuidMeta } from '../character-rules.js';
 import { candidateLogPaths, extractConveneURL, trackerPlatform } from '../convene-link.js';
+import { parseEchoScan, parseEchoScanBatch } from '../echo-inventory.js';
 
 test('accepts UID and exact WuWaBuilds profile URL only', () => {
-  assert.equal(parseUID('701776400'), '701776400');
-  assert.equal(parseUID('https://wuwa.build/profile/701776400'), '701776400');
-  assert.throws(() => parseUID('https://example.com/profile/701776400'));
+  assert.equal(parseUID('700000001'), '700000001');
+  assert.equal(parseUID('https://wuwa.build/profile/700000001'), '700000001');
+  assert.throws(() => parseUID('https://example.com/profile/700000001'));
 });
 
 test('normalizes five matching echo panels', () => {
@@ -17,7 +18,7 @@ test('normalizes five matching echo panels', () => {
   });
   const pairs = [panel('1', 'Crit DMG', 4), panel('2', 'ATK%', 3), panel('3', 'ATK%', 3), panel('4', 'ATK%', 1), panel('5', 'ATK%', 1)];
   const build = normalizeBuild({
-    id: 'b', owner: { uid: '701776400', username: 'u' }, character: { id: 'c' }, weapon: { id: 'w' },
+    id: 'b', owner: { uid: '700000001', username: 'u' }, character: { id: 'c' }, weapon: { id: 'w' },
     sequence: 0, cv: 200, timestamp: '2026-01-01T00:00:00Z', statATK: 2200, statCritRate: 70,
     buildState: { characterLevel: 90, forte: [[10], [9]], echoPanels: pairs.map(item => item.panel) },
     echoSummary: { mainStats: pairs.map(item => item.main) },
@@ -70,7 +71,7 @@ test('uses the current domestic Hiyuki scoring configuration', () => {
 });
 
 test('extracts raw and XOR-obfuscated convene links', () => {
-  const url = 'https://aki-gm-resources-oversea.aki-game.net/aki/gacha/index.html#/record?player_id=715705407&record_id=token';
+  const url = 'https://aki-gm-resources-oversea.aki-game.net/aki/gacha/index.html#/record?player_id=700000001&record_id=token';
   const encoded = Buffer.from(url, 'utf8').map(value => {
     for (let byte = 0; byte < 256; byte += 1) {
       if ((byte ^ ((byte & 0x0f) % 2 === 1 ? 0xa5 : 0xef)) === value) return byte;
@@ -92,4 +93,23 @@ test('compares score, weapon and replaced echoes with the previous build', () =>
   assert.equal(difference.echoes.length, 1);
   assert.equal(difference.echoes[0].before.id, '1');
   assert.ok(difference.delta > 0);
+});
+
+test('normalizes macOS OCR output into a scored echo shape', () => {
+  const raw = {
+    index: 0,
+    card: ['阿嗞嗞', '等级 +25', 'COST 1'],
+    statNames: ['攻击百分比', '生命', '暴击伤害', '暴击', '共鸣效率'],
+    statValues: ['18.0%', '2280', '21.0%', '10.5%', '11.6%'],
+    sonata: ['轻云出月', '共鸣效果']
+  };
+  const echo = parseEchoScan(raw);
+  assert.equal(echo.name, '阿嗞嗞');
+  assert.equal(echo.cost, 1);
+  assert.equal(echo.level, 25);
+  assert.equal(echo.setId, 8);
+  assert.deepEqual(echo.mainStat, { type: 'ATK%', value: 18 });
+  assert.deepEqual(echo.subStats[0], { type: 'Crit DMG', value: 21 });
+  assert.equal(echo.valid, true);
+  assert.equal(parseEchoScanBatch({ requested: 1, detected: 1, echoes: [raw] }).echoes.length, 1);
 });

@@ -1,4 +1,4 @@
-import { compareBuild, scoreBuild, selectCharacterRule } from '/core.js';
+import { compareBuild, scoreBuild, scoreEcho, selectCharacterRule } from '/core.js';
 import { characterNames, weaponNames } from '/character-rules.js';
 
 const form = document.querySelector('#profile-form');
@@ -18,9 +18,19 @@ const conveneStatus = document.querySelector('#convene-status');
 const conveneCopy = document.querySelector('#convene-copy');
 const conveneURL = document.querySelector('#convene-url');
 const ruleUpdate = document.querySelector('#rule-update');
+const inventoryView = document.querySelector('#inventory-view');
+const echoScanForm = document.querySelector('#echo-scan-form');
+const echoCount = document.querySelector('#echo-count');
+const echoScanButton = document.querySelector('#echo-scan');
+const echoScanStatus = document.querySelector('#echo-scan-status');
+const scannerCheck = document.querySelector('#echo-scanner-check');
+const inventorySummary = document.querySelector('#inventory-summary');
+const inventoryList = document.querySelector('#inventory-list');
+const inventoryExport = document.querySelector('#inventory-export');
 let currentBuilds = [];
 let previousBuilds = [];
 let selectedCharacterId;
+let inventoryData = JSON.parse(localStorage.getItem('wuwa-echo-inventory') || 'null');
 const skillNames = ['常态', '技能', '解放', '变奏', '回路', '延奏'];
 const statNames = {
   HP: '生命', 'HP%': '生命百分比', ATK: '攻击', 'ATK%': '攻击百分比', DEF: '防御', 'DEF%': '防御百分比',
@@ -40,15 +50,18 @@ navButtons.forEach(item => item.addEventListener('click', () => {
   navButtons.forEach(button => button.classList.toggle('active', button === item));
   document.querySelector('#build-view').hidden = item.dataset.view !== 'build';
   document.querySelector('#gacha-view').hidden = item.dataset.view !== 'gacha';
+  inventoryView.hidden = item.dataset.view !== 'inventory';
   if (item.dataset.view === 'gacha' && !triedConveneLink) {
     triedConveneLink = true;
     extractConveneLink();
   }
 }));
 
+if (inventoryData?.echoes) renderInventory();
+
 const stored = JSON.parse(localStorage.getItem('wuwa-builds') || 'null');
 const previousStored = JSON.parse(localStorage.getItem('wuwa-builds-previous') || 'null');
-if (previousStored?.uid === stored?.uid) previousBuilds = previousStored.builds || [];
+if (stored?.uid && previousStored?.uid === stored.uid) previousBuilds = previousStored.builds || [];
 if (stored?.uid) {
   input.value = stored.uid;
   if (stored.builds?.every(build => build.characterLevel != null && build.weaponLevel != null && build.stats && build.echoes?.every(echo => echo.resourceId))) {
@@ -88,6 +101,9 @@ form.addEventListener('submit', async event => {
 });
 
 conveneButton.addEventListener('click', extractConveneLink);
+scannerCheck.addEventListener('click', checkEchoScanner);
+echoScanForm.addEventListener('submit', scanEchoInventory);
+inventoryExport.addEventListener('click', exportInventory);
 document.querySelector('#convene-copy-button').addEventListener('click', copyConveneLink);
 document.querySelectorAll('[data-tracker-page]').forEach(button => button.addEventListener('click', () => showTrackerPage(button.dataset.trackerPage)));
 
@@ -156,6 +172,66 @@ function showSelected() {
   const build = currentBuilds.find(item => item.characterId === selectedCharacterId);
   builds.replaceChildren(buildCard(build));
   renderDifference(build);
+  if (inventoryData?.echoes) renderInventory();
+}
+
+async function checkEchoScanner() {
+  scannerCheck.disabled = true;
+  echoScanStatus.textContent = '正在检查 macOS 权限…';
+  try {
+    const response = await fetch('/api/echo-scanner');
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || '检查失败');
+    const missing = [];
+    if (!data.gameFound) missing.push('未检测到鸣潮');
+    if (!data.screenCapture) missing.push('未授权屏幕录制');
+    if (!data.accessibility) missing.push('未授权辅助功能');
+    echoScanStatus.textContent = missing.length ? missing.join('；') : '游戏与系统权限已就绪';
+  } catch (error) { echoScanStatus.textContent = error.message; }
+  finally { scannerCheck.disabled = false; }
+}
+
+async function scanEchoInventory(event) {
+  event.preventDefault();
+  echoScanButton.disabled = true;
+  scannerCheck.disabled = true;
+  const limit = echoCount.value ? Number(echoCount.value) : 0;
+  echoScanStatus.textContent = '扫描开始后会切换到游戏，请不要操作鼠标。声骸较多时需要几分钟…';
+  try {
+    const response = await fetch('/api/echo-scan', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ limit }) });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || '扫描失败');
+    inventoryData = data;
+    localStorage.setItem('wuwa-echo-inventory', JSON.stringify(data));
+    renderInventory();
+    const invalid = data.echoes.filter(echo => !echo.valid).length;
+    echoScanStatus.textContent = `已扫描 ${data.echoes.length} 个声骸${invalid ? `，${invalid} 个需要校对` : ''}`;
+  } catch (error) { echoScanStatus.textContent = error.message; }
+  finally { echoScanButton.disabled = false; scannerCheck.disabled = false; }
+}
+
+function renderInventory() {
+  const items = inventoryData?.echoes || [];
+  const build = currentBuilds.find(item => item.characterId === selectedCharacterId);
+  const selected = build && selectCharacterRule(build);
+  const valid = items.filter(echo => echo.valid);
+  inventoryExport.disabled = !items.length;
+  inventorySummary.innerHTML = items.length ? `<div><small>已扫描</small><strong>${items.length}</strong></div><div><small>识别完整</small><strong>${valid.length}</strong></div><div><small>当前评分角色</small><strong>${escapeHTML(build ? characterNames[build.characterId] || build.characterId : '未选择')}</strong></div>` : '';
+  inventoryList.innerHTML = items.length ? items.map(echo => inventoryEchoCard(echo, selected?.rule)).join('') : '<div class="empty">还没有扫描声骸</div>';
+}
+
+function inventoryEchoCard(echo, rule) {
+  const score = echo.valid && rule ? scoreEcho(echo, rule) : null;
+  const main = echo.mainStat ? `${statNames[echo.mainStat.type] || echo.mainStat.type} ${formatStat(echo.mainStat.type, echo.mainStat.value)}` : '主词条未识别';
+  return `<article class="inventory-echo ${echo.valid ? '' : 'needs-review'}"><header><div>${echo.resourceId ? `<img src="${currentAsset('phantom', `phantom_${echo.resourceId}.png`)}" alt="">` : '<span>◇</span>'}<div><b>${escapeHTML(echo.name)}</b><small>LV.${echo.level} · C${echo.cost || '—'}${echo.sonata ? ` · ${escapeHTML(echo.sonata)}` : ''}</small></div></div><strong>${score ? `${number(score.value)} ${score.grade}` : echo.valid ? '待选角色' : '待校对'}</strong></header><p><b>主词条</b>${escapeHTML(main)}</p><dl>${echo.subStats.map(stat => `<div><dt>${escapeHTML(statNames[stat.type] || stat.type)}</dt><dd>${formatStat(stat.type, stat.value)}</dd></div>`).join('')}</dl>${echo.issues.length ? `<footer>${escapeHTML(echo.issues.join('；'))}</footer>` : ''}</article>`;
+}
+
+function exportInventory() {
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(new Blob([JSON.stringify(inventoryData, null, 2)], { type: 'application/json' }));
+  link.download = `wuwa-echoes-${new Date().toISOString().slice(0, 10)}.json`;
+  link.click();
+  URL.revokeObjectURL(link.href);
 }
 
 function renderDifference(build) {
