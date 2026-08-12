@@ -10,6 +10,7 @@ const roster = document.querySelector('#roster');
 const builds = document.querySelector('#builds');
 let currentBuilds = [];
 let selectedCharacterId;
+let cardObserver;
 const skillNames = ['常态', '技能', '解放', '变奏', '回路', '延奏'];
 const statNames = {
   HP: '生命', 'HP%': '生命百分比', ATK: '攻击', 'ATK%': '攻击百分比', DEF: '防御', 'DEF%': '防御百分比',
@@ -83,7 +84,19 @@ roster.addEventListener('click', event => {
 function showSelected() {
   const build = currentBuilds.find(item => item.characterId === selectedCharacterId);
   builds.replaceChildren(buildCard(build));
+  fitCard();
 }
+
+function fitCard() {
+  const article = builds.querySelector('article');
+  if (!article || innerWidth <= 900) return;
+  article.style.transform = 'none';
+  const scale = Math.min((builds.clientWidth - 4) / article.offsetWidth, (builds.clientHeight - 4) / article.offsetHeight);
+  article.style.transform = `scale(${Math.min(scale, 1.35)})`;
+}
+
+cardObserver = new ResizeObserver(fitCard);
+cardObserver.observe(builds);
 
 function buildCard(build) {
   const score = scoreBuild(build);

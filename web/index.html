@@ -16,21 +16,23 @@
     <p class="source">评分配置来自 WWUID<br>数据来自 WuWaBuilds</p>
   </aside>
   <main>
-    <header>
-      <div><p class="eyebrow">RESONATOR ARCHIVE</p><h2>角色与声骸</h2><p class="lead">查看当前 Build，快速找到最值得优化的声骸。</p></div>
-      <a class="external" href="https://wuwa.build/import" target="_blank" rel="noreferrer">在 WuWaBuilds 更新 <span>↗</span></a>
-    </header>
-    <form id="profile-form" class="search-card">
-      <label for="profile">玩家档案</label>
-      <div class="input-row">
-        <span class="search-icon" aria-hidden="true">⌕</span>
-        <input id="profile" name="profile" autocomplete="off" inputmode="numeric" placeholder="输入 UID 或粘贴 WuWaBuilds Profile 地址" required>
-        <button id="refresh" type="submit">同步档案</button>
-      </div>
-      <p id="status" role="status">数据保存在本机，不需要登录游戏账号</p>
-    </form>
-    <section id="overview" aria-live="polite"></section>
-    <section id="roster" aria-label="选择角色"></section>
+    <section class="controls">
+      <header>
+        <div><p class="eyebrow">RESONATOR ARCHIVE</p><h2>角色与声骸</h2><p class="lead">同步档案，选择角色查看完整评分。</p></div>
+        <a class="external" href="https://wuwa.build/import" target="_blank" rel="noreferrer">管理 Build <span>↗</span></a>
+      </header>
+      <form id="profile-form" class="search-card">
+        <label for="profile">WuWaBuilds 玩家档案</label>
+        <div class="input-row">
+          <span class="search-icon" aria-hidden="true">⌕</span>
+          <input id="profile" name="profile" autocomplete="off" inputmode="numeric" placeholder="输入 UID" required>
+          <button id="refresh" type="submit">同步</button>
+        </div>
+        <p id="status" role="status">数据保存在本机，不需要登录游戏账号</p>
+      </form>
+      <section id="overview" aria-live="polite"></section>
+      <section id="roster" aria-label="选择角色"></section>
+    </section>
     <section id="builds" aria-live="polite"></section>
   </main>
   <script type="module" src="/app.js"></script>
