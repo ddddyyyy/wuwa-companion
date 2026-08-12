@@ -2,6 +2,16 @@
 
 跨平台的本地鸣潮养成助手：同步 WuWaBuilds 角色档案，按 WWUID 配置评分声骸，并在同一页面使用 WuWa Tracker 查看抽卡分析。
 
+## 界面预览
+
+### 角色与声骸评分
+
+![角色与声骸评分面板](docs/screenshots/build-dashboard.jpg)
+
+### 抽卡链接提取与 WuWa Tracker
+
+![抽卡分析与 WuWa Tracker 导入页面](docs/screenshots/gacha-tracker.jpg)
+
 ## 功能
 
 - 通过 UID 同步 WuWaBuilds 公开角色 Build
