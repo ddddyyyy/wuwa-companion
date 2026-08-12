@@ -7,7 +7,9 @@ import { parseUID, normalizeBuild } from './core.js';
 const root = dirname(fileURLToPath(import.meta.url));
 const port = Number(process.env.PORT || 4173);
 const apiOrigin = 'https://api.wuwa.build';
+const resourceOrigin = 'https://ww1.loping151.top';
 const cache = new Map();
+const resourceCache = new Map();
 const staticFiles = new Map([
   ['/', ['web/index.html', 'text/html; charset=utf-8']],
   ['/app.js', ['web/app.js', 'text/javascript; charset=utf-8']],
@@ -24,6 +26,17 @@ async function remoteJSON(path) {
   if (response.url && new URL(response.url).origin !== apiOrigin) throw new Error('WuWaBuilds 响应来源异常');
   if (!response.ok) throw new Error(`WuWaBuilds 请求失败（HTTP ${response.status}）`);
   return response.json();
+}
+
+async function resourceJSON(path) {
+  if (resourceCache.has(path)) return resourceCache.get(path);
+  const url = new URL(path, resourceOrigin);
+  if (url.origin !== resourceOrigin) throw new Error('非法素材地址');
+  const response = await fetch(url, { signal: AbortSignal.timeout(10_000) });
+  if (!response.ok) return null;
+  const value = await response.json();
+  resourceCache.set(path, value);
+  return value;
 }
 
 export async function loadLatestBuilds(input) {
@@ -50,7 +63,16 @@ export async function loadLatestBuilds(input) {
   }
   const builds = [];
   for (const summary of [...latest.values()].sort((a, b) => b.timestamp.localeCompare(a.timestamp))) {
-    builds.push(normalizeBuild(await remoteJSON(`/build/${encodeURIComponent(summary.id)}`)));
+    const build = normalizeBuild(await remoteJSON(`/build/${encodeURIComponent(summary.id)}`));
+    const weapon = await resourceJSON(`/XutheringWavesUID/resource/map/detail_json/weapon/${build.weaponId}.json`);
+    build.weaponName = weapon?.name;
+    await Promise.all(build.echoes.map(async echo => {
+      echo.resourceId = String(echo.id).slice(0, -1);
+      const resource = await resourceJSON(`/XutheringWavesUID/resource/map/detail_json/echo/${echo.resourceId}.json`);
+      echo.name = resource?.name;
+      echo.intensity = resource?.intensityCode;
+    }));
+    builds.push(build);
   }
   const data = { uid, builds, syncedAt: new Date().toISOString() };
   cache.set(uid, { time: Date.now(), data });
