@@ -3,6 +3,7 @@ import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { parseUID, normalizeBuild } from './core.js';
+import { parseConveneURL, bannerInfo } from './gacha.js';
 
 const root = dirname(fileURLToPath(import.meta.url));
 const port = Number(process.env.PORT || 4173);
@@ -14,6 +15,7 @@ const staticFiles = new Map([
   ['/', ['web/index.html', 'text/html; charset=utf-8']],
   ['/app.js', ['web/app.js', 'text/javascript; charset=utf-8']],
   ['/core.js', ['core.js', 'text/javascript; charset=utf-8']],
+  ['/gacha.js', ['gacha.js', 'text/javascript; charset=utf-8']],
   ['/character-rules.js', ['character-rules.js', 'text/javascript; charset=utf-8']],
   ['/styles.css', ['web/styles.css', 'text/css; charset=utf-8']]
 ]);
@@ -79,17 +81,37 @@ export async function loadLatestBuilds(input) {
   return { ...data, cached: false };
 }
 
+export async function loadGacha(input) {
+  const params = parseConveneURL(input);
+  const entries = await Promise.all(Object.keys(bannerInfo).map(async type => {
+    const response = await fetch(`${params.apiOrigin}/gacha/record/query`, {
+      method: 'POST', headers: { 'content-type': 'application/json' }, redirect: 'manual', signal: AbortSignal.timeout(15_000),
+      body: JSON.stringify({ cardPoolId: params.recordId, cardPoolType: Number(type), languageCode: params.languageCode,
+        playerId: params.playerId, recordId: params.recordId, serverId: params.serverId })
+    });
+    if (!response.ok) throw new Error(`官方抽卡接口请求失败（HTTP ${response.status}）`);
+    const value = await response.json();
+    if (!Array.isArray(value?.data)) throw new Error('官方抽卡接口格式已变化');
+    return [type, value.data];
+  }));
+  return { playerId: params.playerId, serverArea: params.serverArea, fetchedAt: new Date().toISOString(), pulls: Object.fromEntries(entries) };
+}
+
 export const server = createServer(async (request, response) => {
   try {
     const url = new URL(request.url, `http://${request.headers.host || '127.0.0.1'}`);
-    if (request.method !== 'GET') return sendJSON(response, 405, { error: '只支持 GET 请求' });
-    if (url.pathname === '/api/builds') {
+    if (request.method === 'GET' && url.pathname === '/api/builds') {
       const data = await loadLatestBuilds(url.searchParams.get('profile'));
       return sendJSON(response, 200, data);
     }
+    if (request.method === 'POST' && url.pathname === '/api/gacha') {
+      const body = await readJSON(request);
+      return sendJSON(response, 200, await loadGacha(body.url));
+    }
+    if (request.method !== 'GET') return sendJSON(response, 405, { error: '不支持这个请求' });
     const file = staticFiles.get(url.pathname);
     if (!file) return sendJSON(response, 404, { error: '页面不存在' });
-    response.writeHead(200, { 'content-type': file[1], 'x-content-type-options': 'nosniff' });
+    response.writeHead(200, { 'content-type': file[1], 'x-content-type-options': 'nosniff', 'cache-control': 'no-store' });
     response.end(await readFile(join(root, file[0])));
   } catch (error) {
     sendJSON(response, 400, { error: error instanceof Error ? error.message : '请求失败' });
@@ -99,6 +121,15 @@ export const server = createServer(async (request, response) => {
 function sendJSON(response, status, value) {
   response.writeHead(status, { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store' });
   response.end(JSON.stringify(value));
+}
+
+async function readJSON(request) {
+  let text = '';
+  for await (const chunk of request) {
+    text += chunk;
+    if (text.length > 50_000) throw new Error('请求内容过大');
+  }
+  try { return JSON.parse(text); } catch { throw new Error('请求格式错误'); }
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {

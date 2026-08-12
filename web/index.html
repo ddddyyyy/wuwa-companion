@@ -10,12 +10,12 @@
   <aside>
     <div class="brand"><span>W</span><div><h1>鸣潮管家</h1><small>WuWa Companion</small></div></div>
     <nav aria-label="功能">
-      <button class="active"><i>◆</i>角色与声骸</button>
-      <button disabled><i>✦</i>抽卡分析<small>即将推出</small></button>
+      <button type="button" class="active" data-view="build"><i>◆</i>角色与声骸</button>
+      <button type="button" data-view="gacha"><i>✦</i>抽卡分析</button>
     </nav>
     <p class="source">评分配置来自 WWUID<br>数据来自 WuWaBuilds</p>
   </aside>
-  <main>
+  <main id="build-view">
     <section class="controls">
       <header>
         <div><p class="eyebrow">RESONATOR ARCHIVE</p><h2>角色与声骸</h2><p class="lead">同步档案，选择角色查看完整评分。</p></div>
@@ -34,6 +34,19 @@
       <section id="roster" aria-label="选择角色"></section>
     </section>
     <section id="builds" aria-live="polite"></section>
+  </main>
+  <main id="gacha-view" hidden>
+    <section class="controls gacha-controls">
+      <header><div><p class="eyebrow">CONVENE ARCHIVE</p><h2>抽卡分析</h2><p class="lead">从库洛官方接口同步，记录只保存在本机。</p></div></header>
+      <form id="gacha-form" class="search-card">
+        <label for="gacha-url">游戏内唤取记录链接</label>
+        <textarea id="gacha-url" placeholder="粘贴 Client.log 中以 aki-gm-resources 开头的完整链接" required></textarea>
+        <button id="gacha-refresh" type="submit">同步抽卡记录</button>
+        <p id="gacha-status" role="status">先在游戏内打开一次“唤取记录”，再从日志复制链接</p>
+      </form>
+      <div class="gacha-help"><b>本地优先</b><p>链接只用于向库洛官方接口读取记录，不会保存其中的临时令牌。</p></div>
+    </section>
+    <section id="gacha-results" aria-live="polite"><div class="gacha-empty">同步后将在这里显示卡池分析</div></section>
   </main>
   <script type="module" src="/app.js"></script>
 </body>

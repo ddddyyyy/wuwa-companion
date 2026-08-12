@@ -1,5 +1,6 @@
 import { scoreBuild, selectCharacterRule } from '/core.js';
 import { characterNames, weaponNames } from '/character-rules.js';
+import { analyzeBanner, bannerInfo, mergeGachaData } from '/gacha.js';
 
 const form = document.querySelector('#profile-form');
 const input = document.querySelector('#profile');
@@ -8,6 +9,12 @@ const status = document.querySelector('#status');
 const overview = document.querySelector('#overview');
 const roster = document.querySelector('#roster');
 const builds = document.querySelector('#builds');
+const navButtons = document.querySelectorAll('nav button[data-view]');
+const gachaForm = document.querySelector('#gacha-form');
+const gachaURL = document.querySelector('#gacha-url');
+const gachaButton = document.querySelector('#gacha-refresh');
+const gachaStatus = document.querySelector('#gacha-status');
+const gachaResults = document.querySelector('#gacha-results');
 let currentBuilds = [];
 let selectedCharacterId;
 const skillNames = ['常态', '技能', '解放', '变奏', '回路', '延奏'];
@@ -20,6 +27,15 @@ const statNames = {
   'Resonance Skill DMG Bonus': '共鸣技能伤害加成', 'Resonance Liberation DMG Bonus': '共鸣解放伤害加成'
 };
 const percentageStats = new Set(Object.keys(statNames).filter(name => name.includes('%') || name.includes('Rate') || name.includes('DMG') || name.includes('Regen') || name.includes('Bonus')));
+const storedGacha = JSON.parse(localStorage.getItem('wuwa-gacha') || 'null');
+if (storedGacha?.pulls) renderGacha(storedGacha);
+
+navButtons.forEach(item => item.addEventListener('click', () => {
+  navButtons.forEach(button => button.classList.toggle('active', button === item));
+  document.querySelector('#build-view').hidden = item.dataset.view !== 'build';
+  document.querySelector('#gacha-view').hidden = item.dataset.view !== 'gacha';
+}));
+
 const stored = JSON.parse(localStorage.getItem('wuwa-builds') || 'null');
 if (stored?.uid) {
   input.value = stored.uid;
@@ -50,6 +66,44 @@ form.addEventListener('submit', async event => {
     button.disabled = false;
   }
 });
+
+gachaForm.addEventListener('submit', async event => {
+  event.preventDefault();
+  gachaButton.disabled = true;
+  gachaStatus.textContent = '正在从库洛官方接口读取记录…';
+  try {
+    const response = await fetch('/api/gacha', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ url: gachaURL.value }) });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || '同步失败');
+    const merged = mergeGachaData(JSON.parse(localStorage.getItem('wuwa-gacha') || 'null'), data);
+    localStorage.setItem('wuwa-gacha', JSON.stringify(merged));
+    gachaURL.value = '';
+    renderGacha(merged);
+    gachaStatus.textContent = `已同步玩家 ${merged.playerId}，共 ${Object.values(merged.pulls).reduce((sum, pulls) => sum + pulls.length, 0)} 抽`;
+  } catch (error) {
+    gachaStatus.textContent = error.message;
+  } finally {
+    gachaButton.disabled = false;
+  }
+});
+
+function renderGacha(data) {
+  const entries = Object.entries(data.pulls || {}).filter(([, pulls]) => pulls.length).map(([type, pulls]) => analyzeBanner(pulls, type));
+  const total = entries.reduce((sum, item) => sum + item.total, 0);
+  const five = entries.reduce((sum, item) => sum + item.fiveCount, 0);
+  const four = entries.reduce((sum, item) => sum + item.fourCount, 0);
+  gachaResults.innerHTML = `<header class="gacha-heading"><div><p class="eyebrow">PLAYER ${escapeHTML(data.playerId)}</p><h2>唤取档案</h2></div><span>更新于 ${new Date(data.fetchedAt).toLocaleString('zh-CN')}</span></header>
+    <div class="gacha-overview"><div><small>总抽数</small><strong>${total}</strong></div><div><small>五星</small><strong>${five}</strong></div><div><small>四星</small><strong>${four}</strong></div><div><small>五星率</small><strong>${total ? number(five / total * 100) : '0.0'}%</strong></div></div>
+    <div class="banner-list">${entries.map(bannerCard).join('')}</div>`;
+}
+
+function bannerCard(stats) {
+  const info = bannerInfo[stats.type];
+  const remaining = Math.max(0, stats.pity - stats.currentPity);
+  return `<article class="banner-card"><div class="pity"><span>${escapeHTML(info.name)}</span><strong>${stats.currentPity}<small> / ${stats.pity}</small></strong><i><b style="width:${Math.min(stats.currentPity / stats.pity * 100, 100)}%"></b></i><em>距离五星保底 ${remaining} 抽 · 四星垫池 ${stats.currentPity4}/10</em></div>
+    <div class="banner-stats"><span>总抽数 <b>${stats.total}</b></span><span>五星 <b>${stats.fiveCount}</b></span><span>五星率 <b>${number(stats.fiveRate)}%</b></span><span>平均出金 <b>${stats.fiveCount ? number(stats.averagePity) : '—'}</b></span></div>
+    <div class="five-history"><b>五星历史</b>${stats.fiveStars.length ? stats.fiveStars.map(item => `<div><span>${escapeHTML(item.name || '未知五星')}</span><strong>${item.pulls} 抽</strong><small>${escapeHTML(item.time || '')}</small></div>`).join('') : '<p>暂无五星记录</p>'}</div></article>`;
+}
 
 function render(items = []) {
   currentBuilds = items;
@@ -88,6 +142,7 @@ function showSelected() {
 function buildCard(build) {
   const score = scoreBuild(build);
   const article = document.createElement('article');
+  article.className = 'build-card';
   const character = characterNames[build.characterId] || `角色 ${build.characterId}`;
   const weapon = build.weaponName || weaponNames[build.weaponId] || `武器 ${build.weaponId}`;
   const rating = score.available

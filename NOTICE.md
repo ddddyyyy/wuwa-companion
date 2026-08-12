@@ -17,3 +17,5 @@ WuWaBuilds 仅作为公开 Build 数据来源，与本项目无隶属关系。
 - [WutheringWaves_OverSea_StaticAssets](https://github.com/MoonShadow1976/WutheringWaves_OverSea_StaticAssets)
 
 这些游戏素材的相关权利归原权利人所有；本项目不将素材打包进发行文件。
+
+抽卡导入流程和卡池分类参考 MIT 许可的 [WuWa Local Tracker](https://github.com/dyar7474/WuWa_local_tracker)，本项目自行实现链接校验、官方接口代理、本地合并和页面展示，未复制其界面代码。
