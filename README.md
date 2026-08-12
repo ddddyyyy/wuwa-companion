@@ -1,45 +1,65 @@
 # WuWa Companion
 
-跨平台本地鸣潮助手，支持 Windows、macOS 和 Linux。可以读取 WuWaBuilds 公开 Build、按国内开源项目口径评分声骸，并嵌入 WuWa Tracker 查看抽卡分析。
+跨平台的本地鸣潮养成助手：同步 WuWaBuilds 角色档案，按 WWUID 配置评分声骸，并在同一页面使用 WuWa Tracker 查看抽卡分析。
 
-要求：Node.js 20 或更新版本。
+## 功能
 
-## 运行
+- 通过 UID 同步 WuWaBuilds 公开角色 Build
+- 展示角色、武器、技能、面板和五件声骸
+- 按国内 WWUID 评分配置标记有效词条、声骸等级和优化目标
+- 自动识别 Windows、macOS 和 Linux 的常见游戏路径，提取抽卡链接
+- 内嵌 WuWa Tracker 导入与抽卡分析页面
+- 纯 Node.js 和原生 Web 实现，无 npm 运行时依赖
+
+## 快速开始
+
+需要 [Node.js 20+](https://nodejs.org/)。
 
 ```bash
+git clone https://github.com/ddddyyyy/wuwa-companion.git
+cd wuwa-companion
 npm start
 ```
 
-然后打开 [http://127.0.0.1:4173](http://127.0.0.1:4173)。不需要安装 npm 依赖。
+浏览器打开 [http://127.0.0.1:4173](http://127.0.0.1:4173)。服务只监听本机地址。
 
-## 测试
+## 使用方式
+
+### 角色与声骸
+
+1. 在 [WuWaBuilds](https://wuwa.build/import) 维护并公开角色 Build。
+2. 在 WuWa Companion 输入游戏 UID 并同步。
+3. 选择角色，查看面板、声骸评分和优化建议。
+
+### 抽卡分析
+
+1. 在游戏中打开一次“唤取记录”。
+2. 进入侧栏“抽卡分析”，应用会自动查找并复制抽卡链接。
+3. 将链接粘贴到内嵌的 [WuWa Tracker](https://wuwatracker.com/zh-CN/tracker) 导入页。
+
+如果自动查找失败，页面会显示当前系统对应的官方导入教程。
+
+## 数据与隐私
+
+- WuWaBuilds 数据通过其公开 API 读取，并在内存中短暂缓存。
+- 抽卡链接只从本机日志读取、返回给本地页面并尝试复制到剪贴板，本项目不会将其写入磁盘。
+- 抽卡数据由 WuWa Tracker 管理；向其粘贴链接时适用 WuWa Tracker 的隐私政策。
+- 本项目不需要游戏账号密码，也不会修改游戏文件。
+
+## 开发
 
 ```bash
 npm test
 ```
 
-## 抽卡分析
-
-1. 在游戏内打开一次“唤取记录”。
-2. 打开侧栏“抽卡分析”，应用会按当前系统自动读取并复制链接。
-3. 把链接粘贴到嵌入的 WuWa Tracker 导入页。
-
-链接中的临时令牌不会被本项目保存或上传；抽卡记录由 WuWa Tracker 管理。
-
-## 当前状态
-
-- 已完成：WuWaBuilds 同步、声骸评分、跨平台抽卡链接提取、WuWa Tracker 嵌入。
-
-## 更新 WWUID 评分配置
-
-评分配置固定在已审阅的上游 Commit。开发或发版时运行：
+更新固定版本的 WWUID 评分配置：
 
 ```bash
 npm run sync:wwuid
 ```
 
-普通用户启动应用时不会访问 GitHub。
+普通用户启动应用时不会访问 GitHub。评分参考和第三方许可见 [NOTICE](NOTICE.md)，设计说明见 [docs/build-card-echo-scoring-design.md](docs/build-card-echo-scoring-design.md)。
 
-评分参考与许可说明见 [NOTICE](NOTICE.md)。没有专属配置的角色不会套用通用分数。
+## 许可与声明
 
-完整方案见 [设计文档](docs/build-card-echo-scoring-design.md)。
+项目以 [GPL-3.0](LICENSE) 许可发布。本项目是非官方玩家工具，与库洛游戏、WuWaBuilds、WWUID 和 WuWa Tracker 均无隶属关系；游戏素材与商标权利归其各自权利人所有。
