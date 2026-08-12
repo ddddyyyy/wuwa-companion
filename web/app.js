@@ -91,7 +91,7 @@ function buildCard(build) {
   const character = characterNames[build.characterId] || `角色 ${build.characterId}`;
   const weapon = build.weaponName || weaponNames[build.weaponId] || `武器 ${build.weaponId}`;
   const rating = score.available
-    ? `<div class="grade grade-${score.grade.toLowerCase()}">${score.grade}</div><div><strong>${number(score.total)}<small> / 250</small></strong><span>${escapeHTML(score.templateName)}</span></div>`
+    ? `<div class="grade grade-${score.grade.toLowerCase()}">${score.grade}</div><div class="rating-copy"><strong>${number(score.total)}<small> / 250</small></strong><span>${escapeHTML(score.templateName)}</span><div class="rating-progress"><i><b style="width:${Math.min(score.total / 250 * 100, 100)}%"></b></i><em>${number(score.total / 250 * 100)}%</em></div></div>`
     : `<div class="grade grade-na">—</div><div><strong>暂无评分</strong><span>${escapeHTML(score.reason)}</span></div>`;
   const echoScores = score.available ? score.echoes : build.echoes.map(() => null);
   const rule = selectCharacterRule(build)?.rule;
@@ -107,7 +107,6 @@ function buildCard(build) {
       <div class="stat-column"><div class="character-title"><span>LV.${build.characterLevel || '—'}</span><h3>${escapeHTML(character)}</h3></div><div class="panel-label"><b>声骸词条合计</b><small>默认角色权重 1</small></div><div class="stat-panel">${stats.map(([name, value, tone]) => `<div class="stat-row ${tone}"><span>${escapeHTML(statNames[name] || name)}</span><strong>${formatStat(name, value)}</strong></div>`).join('')}</div></div>
     </div>
     <div class="equipment-row"><div class="weapon-card"><img src="${weaponArt}" alt="" loading="lazy"><div><strong>${escapeHTML(weapon)}</strong><span>LV.${build.weaponLevel || '—'} · 谐振 ${build.weaponRank || '—'} 阶</span></div></div><div class="total">${rating}</div></div>
-    ${score.available ? `<div class="progress"><span>经初步评估，你的声骸评价：</span><strong>${score.grade}</strong><i><b style="width:${Math.min(score.total / 250 * 100, 100)}%"></b></i><em>${number(score.total / 250 * 100)}%</em></div>` : ''}
     <div class="echoes">${build.echoes.map((echo, index) => echoCard(echo, echoScores[index])).join('')}</div>
     ${score.available ? `<p class="weakest"><span>优化建议</span> 优先检查 ${score.weakest.grade} 级声骸（${number(score.weakest.value)} 分）</p>` : ''}`;
   return article;
