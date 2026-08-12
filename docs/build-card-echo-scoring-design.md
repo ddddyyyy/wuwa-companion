@@ -1,12 +1,12 @@
 # WuWa Companion：WuWaBuilds 声骸评分与抽卡分析设计
 
-状态：已确认，待实现  
-目标平台：macOS  
-文档版本：1.2（2026-08-12）
+状态：实现中
+目标平台：Windows、macOS、Linux
+文档版本：1.3（2026-08-12）
 
 ## 1. 目标
 
-这是一个 macOS 本地“鸣潮账号管家”。WuWaBuilds 是角色 Build 的唯一数据源，用户在 WuWaBuilds 上传和维护 Build，本应用完成：
+这是一个跨平台本地“鸣潮账号管家”。WuWaBuilds 是角色 Build 的唯一数据源，用户在 WuWaBuilds 上传和维护 Build，本应用完成：
 
 1. 用户绑定 WuWaBuilds UID 后，读取其公开的角色、武器和五只声骸数据。
 2. 按国内社区常用的角色权重计算单件分与整套分。
@@ -74,21 +74,22 @@ flowchart LR
 
 ## 4. 技术方案
 
-使用 macOS 原生能力，不增加服务端：
+使用浏览器界面和本机 Node.js 服务，不增加远程服务：
 
 | 能力 | 实现 |
 |---|---|
-| 界面 | SwiftUI |
-| WuWaBuilds 数据 | `URLSession` 请求 `https://api.wuwa.build` 的 JSON |
+| 界面 | 原生 HTML、CSS、JavaScript |
+| 本机服务 | Node.js 20 内置 `http` 与 `fetch` |
+| WuWaBuilds 数据 | 本机服务请求 `https://api.wuwa.build` 的 JSON |
 | Build 入口 | UID 或 `https://wuwa.build/profile/{uid}` |
-| 数据模型与规则 | Swift `Codable` + JSON |
-| 本地保存 | Application Support 下的 JSON 文件 |
+| 数据模型与规则 | JavaScript + JSON |
+| Build 缓存 | 浏览器 `localStorage` + 本机五分钟内存缓存 |
 | 网页入口 | 系统浏览器打开对应 WuWaBuilds 页面 |
-| 抽卡日志访问 | `fileImporter` + security-scoped bookmark |
-| 抽卡接口访问 | `URLSession`，仅允许 HTTPS 官方域名 |
+| 抽卡日志访问 | 浏览器文件选择器，由用户主动选择 |
+| 抽卡接口访问 | Node.js `fetch`，仅允许 HTTPS 官方域名 |
 | 敏感信息 | 不采集账号密码，不持久化临时抽卡 URL |
 
-第一版不使用数据库。只有当 Build 与抽卡记录的 JSON 读写出现可测量卡顿或需要复杂跨账号查询时，才迁移 SQLite。
+第一版不使用数据库。只有当 Build 与抽卡记录的浏览器存储出现可测量瓶颈或需要复杂跨账号查询时，才迁移 SQLite。
 
 模块保持为直接的数据流，不增加服务端：
 
@@ -419,7 +420,7 @@ WuWaBuilds 详情提供可变主词条；若评分需要 COST 固定的第二主
 第一次使用：
 
 1. 用户在游戏内打开一次“唤取记录”，让客户端写入最新历史链接。
-2. 用户在应用中选择 `Client.log`；应用保存 macOS 文件访问书签，不猜测安装目录。
+2. 用户在浏览器中选择 `Client.log`；应用只读取本次选择的文件，不猜测安装目录。
 3. 用户点击“刷新抽卡”，应用只读日志并提取最新的候选 URL。
 4. URL 通过安全校验后，应用按官方分页接口拉取各卡池记录。
 5. 新记录按官方记录 ID 去重后写入本地；同步结束即从内存丢弃完整 URL。
@@ -543,23 +544,22 @@ JSON 导入先在内存中完成格式校验、UID 检查和去重预览，用�
 
 ## 11. 本地存储
 
-建议目录：
+第一版使用浏览器同源本地存储：
 
 ```text
-~/Library/Application Support/WuWaCompanion/
-  build-cache.json
-  pulls.json
-  scoring-rules.json
-  pull-rules.json
+localStorage
+  wuwa-builds
+  wuwa-pulls
+  scoring-rules-version
+  pull-rules-version
 ```
 
-- `build-cache.json` 按 UID 保存最近一次成功读取的 WuWaBuilds Build、评分结果和刷新时间。
-- `scoring-rules.json` 保存当前随应用发布的规则副本。
-- `pulls.json` 保存按 UID 分组的抽卡历史，不包含临时 URL。
-- `pull-rules.json` 保存卡池分组、保底和当期卡池目录版本。
+- `wuwa-builds` 按 UID 保存最近一次成功读取的 WuWaBuilds Build、评分结果和刷新时间。
+- 评分与卡池规则随应用代码发布，本地只保存规则版本。
+- `wuwa-pulls` 保存按 UID 分组的抽卡历史，不包含临时 URL。
 - 同一角色存在多个远程 Build 时，总览只展示时间最新的一张；历史由 WuWaBuilds 维护。
 
-日志文件访问书签使用系统提供的安全书签机制保存。删除账号档案时二次确认后删除该 UID 的 Build 缓存和抽卡历史；不会删除 WuWaBuilds 上的数据。
+浏览器不会保存 `Client.log` 文件权限，刷新抽卡时由用户重新选择文件或粘贴临时 URL。删除账号档案时二次确认后清除该 UID 的 Build 缓存和抽卡历史；不会删除 WuWaBuilds 上的数据。
 
 ## 12. 测试与验收
 
@@ -590,7 +590,7 @@ JSON 导入先在内存中完成格式校验、UID 检查和去重预览，用�
 - 不同 UID 导入时必须阻止静默合并。
 - 对“上次五星命中、未命中、未知历史、无五星”四类固定样例验证垫数和保底状态。
 - 不完整周期不进入平均五星抽数。
-- 模拟写入中断后，原 `pulls.json` 仍可读取。
+- 导入无效 JSON 时，现有 `wuwa-pulls` 不被覆盖。
 
 ### 用户验收
 
@@ -665,7 +665,7 @@ Build 数据来源：
 
 WutheringWavesUID 与 ScoreEcho 使用 GPL-3.0，并附有非商业使用说明。本项目若直接复制其代码或角色配置，需要遵守对应许可；若计划闭源或商业发布，应在发布前完成独立实现、独立权重数据和法律审查。
 
-WuWa Tracker 的当前 `import.ps1` 文件明确使用 GPL-3.0，并要求再分发时保留许可与致谢。第一版独立实现 macOS 日志读取和 URL 校验，不复制该脚本；若将来复用其代码，需单独评估 GPL 对项目发布方式的影响。其他仓库或文件也按各自许可证处理，不把整个组织视为同一许可。
+WuWa Tracker 的当前 `import.ps1` 文件明确使用 GPL-3.0，并要求再分发时保留许可与致谢。第一版独立实现跨平台日志读取和 URL 校验，不复制该脚本；若将来复用其代码，需单独评估 GPL 对项目发布方式的影响。其他仓库或文件也按各自许可证处理，不把整个组织视为同一许可。
 
 ## 15. 已确认决策
 

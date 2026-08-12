@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>WuWa Companion</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <aside>
+    <h1>WuWa Companion</h1>
+    <nav aria-label="功能">
+      <button class="active">角色与声骸</button>
+      <button disabled>抽卡分析 · 下一步</button>
+    </nav>
+  </aside>
+  <main>
+    <header>
+      <div><p class="eyebrow">WUWA BUILDS</p><h2>角色与声骸</h2></div>
+      <a href="https://wuwa.build/import" target="_blank" rel="noreferrer">去 WuWaBuilds 更新</a>
+    </header>
+    <form id="profile-form">
+      <label for="profile">UID 或 WuWaBuilds Profile 地址</label>
+      <div class="input-row">
+        <input id="profile" name="profile" autocomplete="off" inputmode="numeric" placeholder="例如 701776400" required>
+        <button id="refresh" type="submit">刷新</button>
+      </div>
+    </form>
+    <p id="status" role="status">输入 UID 开始同步</p>
+    <section id="builds" aria-live="polite"></section>
+  </main>
+  <script type="module" src="/app.js"></script>
+</body>
+</html>
+

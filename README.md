@@ -1,17 +1,21 @@
 # WuWa Companion
 
-macOS 本地鸣潮助手。当前版本可以按 UID 读取 WuWaBuilds 的公开 Build，展示五件声骸并进行通用输出试算。
+跨平台本地鸣潮助手，支持 Windows、macOS 和 Linux。当前版本可以按 UID 读取 WuWaBuilds 的公开 Build，展示五件声骸并进行通用输出试算。
+
+要求：Node.js 20 或更新版本。
 
 ## 运行
 
 ```bash
-swift run WuWaCompanion
+npm start
 ```
+
+然后打开 [http://127.0.0.1:4173](http://127.0.0.1:4173)。不需要安装 npm 依赖。
 
 ## 测试
 
 ```bash
-swift test
+npm test
 ```
 
 ## 当前状态
