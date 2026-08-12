@@ -23,8 +23,13 @@ const percentageStats = new Set(Object.keys(statNames).filter(name => name.inclu
 const stored = JSON.parse(localStorage.getItem('wuwa-builds') || 'null');
 if (stored?.uid) {
   input.value = stored.uid;
-  render(stored.builds);
-  status.textContent = '正在显示上一次同步结果';
+  if (stored.builds?.every(build => build.characterLevel != null && build.weaponLevel != null && build.stats && build.echoes?.every(echo => echo.resourceId))) {
+    render(stored.builds);
+    status.textContent = '正在显示上一次同步结果';
+  } else {
+    status.textContent = '正在更新旧版缓存…';
+    queueMicrotask(() => form.requestSubmit());
+  }
 }
 
 form.addEventListener('submit', async event => {

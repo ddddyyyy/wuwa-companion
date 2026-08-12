@@ -23,7 +23,7 @@ nav button small { margin-left: auto; color: #566069; font-size: 10px; }
 nav .active { border-color: rgba(215,189,120,.16); color: #f5f3ed; background: linear-gradient(90deg, rgba(215,189,120,.13), rgba(215,189,120,.025)); }
 nav .active i { color: var(--gold); }
 .source { margin: auto 8px 0; color: #515b63; font-size: 10px; line-height: 1.7; }
-main { width: min(1180px, 100%); margin: 0 auto; padding: 54px 46px 80px; align-self: start; }
+main { width: min(1180px, 100%); margin: 0 auto; padding: 24px 28px; align-self: start; }
 header { display: flex; justify-content: space-between; align-items: flex-start; gap: 28px; }
 h2 { margin: 5px 0 8px; font-size: clamp(30px, 4vw, 42px); letter-spacing: -.04em; }
 .eyebrow { margin: 0; color: var(--gold); font-size: 10px; letter-spacing: .24em; }
@@ -31,7 +31,7 @@ h2 { margin: 5px 0 8px; font-size: clamp(30px, 4vw, 42px); letter-spacing: -.04e
 .external { flex: none; margin-top: 15px; border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; color: #c8cdd0; background: rgba(255,255,255,.025); font-size: 12px; text-decoration: none; }
 .external:hover { border-color: rgba(215,189,120,.4); color: #fff; }
 .external span { margin-left: 6px; color: var(--gold); }
-.search-card { margin-top: 32px; padding: 17px 18px 12px; border: 1px solid var(--line); border-radius: 15px; background: linear-gradient(120deg, rgba(27,34,41,.9), rgba(16,21,27,.9)); box-shadow: 0 16px 50px rgba(0,0,0,.18); }
+.search-card { margin-top: 20px; padding: 14px 15px 10px; border: 1px solid var(--line); border-radius: 15px; background: linear-gradient(120deg, rgba(27,34,41,.9), rgba(16,21,27,.9)); box-shadow: 0 16px 50px rgba(0,0,0,.18); }
 label { display: block; margin-bottom: 9px; color: #aeb5ba; font-size: 11px; letter-spacing: .08em; }
 .input-row { position: relative; display: flex; gap: 9px; }
 .search-icon { position: absolute; left: 14px; top: 50%; translate: 0 -50%; color: #68727a; font-size: 20px; }
@@ -63,7 +63,7 @@ input:focus { border-color: #9d864d; box-shadow: 0 0 0 3px rgba(215,189,120,.08)
 article, .empty { position: relative; overflow: hidden; border: 1px solid #5e5e5e; border-radius: 17px; padding: 10px; background: linear-gradient(145deg, #171719 0 55%, #4a2c20 100%); box-shadow: 0 20px 60px rgba(0,0,0,.25); }
 article { width: min(560px, 100%); margin-inline: auto; }
 article::before { content: ""; position: absolute; inset: 0 auto 0 0; width: 2px; background: linear-gradient(transparent, rgba(215,189,120,.7), transparent); }
-.profile-panel { position: relative; display: grid; grid-template-columns: 47% 53%; height: 450px; overflow: hidden; border: 1px solid #747474; border-radius: 14px; background: #292a2c; }
+.profile-panel { position: relative; display: grid; grid-template-columns: 47% 53%; height: 330px; overflow: hidden; border: 1px solid #747474; border-radius: 14px; background: #292a2c; }
 .character-art { position: relative; min-width: 0; overflow: hidden; }
 .character-art::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, transparent 55%, #16191c), linear-gradient(0deg, #11161a 0, transparent 35%); pointer-events: none; }
 .character-art > img { position: absolute; inset: 0 0 auto -5%; width: 110%; height: 100%; object-fit: contain; object-position: center bottom; filter: drop-shadow(0 15px 25px rgba(0,0,0,.35)); }
@@ -78,7 +78,7 @@ h3 { margin: 0; font-size: 25px; }
 .panel-label { position: absolute; top: 48px; display: flex; justify-content: space-between; width: calc(53% - 18px); padding: 4px 8px; color: #d5d8d8; font-size: 11px; }
 .panel-label b { border-radius: 4px; padding: 3px 7px; background: #090909; }
 .panel-label small { color: #697178; }
-.stat-row { display: flex; justify-content: space-between; padding: 7px 13px; border-top: 1px solid rgba(255,255,255,.07); color: #a4a4a4; font-size: 12px; }
+.stat-row { display: flex; justify-content: space-between; padding: 4px 10px; border-top: 1px solid rgba(255,255,255,.07); color: #a4a4a4; font-size: 10px; }
 .stat-row strong { color: #b9bec1; font-weight: 550; }
 .stat-row.muted span, .stat-row.muted strong, .echo-stats .muted { color: #666d72; }
 .stat-row.useful span, .stat-row.useful strong, .echo-stats .useful { color: #d8c18a; }
@@ -109,15 +109,15 @@ h3 { margin: 0; font-size: 25px; }
 .progress em { color: #d8ddd9; font-style: normal; }
 .echoes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; }
 .echo { min-width: 0; overflow: hidden; border: 1px solid var(--line); border-radius: 12px; background: #15191c; }
-.echo-head { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 8px; padding: 9px; background: linear-gradient(120deg, rgba(255,255,255,.08), transparent); }
-.echo-head > img, .echo-placeholder { width: 44px; height: 44px; object-fit: contain; filter: drop-shadow(0 4px 5px rgba(0,0,0,.35)); }
+.echo-head { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 6px; padding: 6px; background: linear-gradient(120deg, rgba(255,255,255,.08), transparent); }
+.echo-head > img, .echo-placeholder { width: 34px; height: 34px; object-fit: contain; filter: drop-shadow(0 4px 5px rgba(0,0,0,.35)); }
 .echo-placeholder { display: grid; place-items: center; color: #697178; font-size: 25px; }
 .echo-head div { display: grid; }
 .echo-head b { color: #d2d5d6; font-size: 10px; }
 .echo-head small { color: #858d92; font-size: 9px; }
 .echo-head > strong { color: #e3c473; font-size: 12px; }
 .echo-stats { display: grid; grid-template-columns: minmax(0,1fr) auto; }
-.echo-stats > * { margin: 0; padding: 5px 9px; border-top: 1px solid rgba(255,255,255,.045); font-size: 9px; }
+.echo-stats > * { margin: 0; padding: 3px 7px; border-top: 1px solid rgba(255,255,255,.045); font-size: 8px; }
 .echo-stats b { color: #e0a36f; }
 .echo-stats strong { color: #e0a36f; text-align: right; }
 .echo-stats span { color: #899196; }
@@ -125,6 +125,30 @@ h3 { margin: 0; font-size: 25px; }
 .weakest { margin: 13px 0 0; color: #7f8990; font-size: 10px; }
 .weakest span { margin-right: 7px; border-radius: 4px; padding: 3px 6px; color: #d3bd82; background: rgba(215,189,120,.09); }
 .empty { color: #79838a; text-align: center; padding: 70px; }
+@media (min-width: 901px) {
+  main { display: grid; grid-template-columns: minmax(280px, 1fr) minmax(560px, 1.65fr); grid-template-areas: "head builds" "search builds" "overview builds" "roster builds"; column-gap: 24px; align-content: start; }
+  header { grid-area: head; display: block; }
+  header .external { display: inline-block; margin-top: 14px; }
+  .search-card { grid-area: search; }
+  #overview { grid-area: overview; margin-block: 14px; }
+  #roster { grid-area: roster; }
+  #builds { grid-area: builds; }
+  .input-row { display: grid; }
+  .input-row button { height: 42px; }
+  article { width: 560px; }
+}
+@media (min-width: 901px) and (max-height: 880px) {
+  main { grid-template-rows: auto auto auto; }
+  #overview { display: none; }
+  #builds { height: 743px; }
+  article { transform: scale(.88); transform-origin: top center; }
+}
+@media (min-width: 901px) and (max-height: 740px) {
+  header .lead, header .external { display: none; }
+  .search-card { margin-top: 12px; }
+  #builds { height: 659px; }
+  article { transform: scale(.82); }
+}
 @media (max-width: 900px) {
   body { grid-template-columns: 78px 1fr; }
   aside { padding-inline: 13px; }
@@ -132,7 +156,7 @@ h3 { margin: 0; font-size: 25px; }
   .brand div, nav button:not(.active), nav button small, nav button:not(.active) i, .source { display: none; }
   nav button { justify-content: center; padding: 0; }
   nav button i { width: auto; }
-  main { padding-inline: 28px; }
+  main { display: block; padding-inline: 28px; }
   .profile-panel { grid-template-columns: 47% 53%; }
   .echoes { grid-template-columns: repeat(2, 1fr); }
 }
@@ -150,7 +174,7 @@ h3 { margin: 0; font-size: 25px; }
   #overview > div { padding: 12px; }
   .roster-list button { flex-basis: 76px; }
   article { padding: 7px; }
-  .profile-panel { height: 370px; }
+  .profile-panel { height: 330px; }
   .character-title { right: 7px; }
   .stat-panel { margin-right: 5px; }
   .panel-label { top: 45px; width: calc(53% - 12px); font-size: 9px; }
