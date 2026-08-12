@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { parseUID, normalizeBuild, scoreBuild, scoreEcho, selectCharacterRule } from '../core.js';
 import { characterRuleSets, wwuidMeta } from '../character-rules.js';
-import { analyzeBanner, mergeGachaData, parseConveneURL } from '../gacha.js';
+import { candidateLogPaths, extractConveneURL, trackerPlatform } from '../convene-link.js';
 
 test('accepts UID and exact WuWaBuilds profile URL only', () => {
   assert.equal(parseUID('701776400'), '701776400');
@@ -69,21 +69,16 @@ test('uses the current domestic Hiyuki scoring configuration', () => {
   assert.equal(selected.rule.attribute, 'Glacio');
 });
 
-test('parses official convene URL and analyzes newest-first pulls', () => {
-  const params = parseConveneURL('https://aki-gm-resources-oversea.aki-game.net/aki/gacha/index.html#/record?svr_id=1&player_id=715705407&lang=zh-Hans&record_id=token&svr_area=global');
-  assert.equal(params.playerId, '715705407');
-  assert.equal(params.apiOrigin, 'https://gmserver-api.aki-game2.net');
-  const stats = analyzeBanner([
-    { name: '三星', qualityLevel: 3 }, { name: '四星', qualityLevel: 4 },
-    { name: '五星甲', qualityLevel: 5 }, { name: '三星', qualityLevel: 3 }, { name: '五星乙', qualityLevel: 5 }
-  ]);
-  assert.equal(stats.currentPity, 2);
-  assert.equal(stats.currentPity4, 1);
-  assert.deepEqual(stats.fiveStars.map(item => item.pulls), [2, 1]);
-});
-
-test('merges expired gacha records without collapsing identical pulls', () => {
-  const pull = { name: '相同物品', qualityLevel: 3, time: '2026-01-01 00:00:00' };
-  const merged = mergeGachaData({ pulls: { 1: [pull, pull] } }, { pulls: { 1: [pull] } });
-  assert.equal(merged.pulls[1].length, 2);
+test('extracts raw and XOR-obfuscated convene links', () => {
+  const url = 'https://aki-gm-resources-oversea.aki-game.net/aki/gacha/index.html#/record?player_id=715705407&record_id=token';
+  const encoded = Buffer.from(url, 'utf8').map(value => {
+    for (let byte = 0; byte < 256; byte += 1) {
+      if ((byte ^ ((byte & 0x0f) % 2 === 1 ? 0xa5 : 0xef)) === value) return byte;
+    }
+    throw new Error('cannot encode test byte');
+  });
+  assert.equal(extractConveneURL(Buffer.from(`prefix ${url} suffix`)), url);
+  assert.equal(extractConveneURL(encoded), url);
+  assert.equal(trackerPlatform('darwin'), 'macos');
+  assert.match(candidateLogPaths('darwin', '/Users/test')[0], /com\.kurogame\.wutheringwaves\.global/);
 });

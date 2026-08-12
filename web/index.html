@@ -36,17 +36,19 @@
     <section id="builds" aria-live="polite"></section>
   </main>
   <main id="gacha-view" hidden>
-    <section class="controls gacha-controls">
-      <header><div><p class="eyebrow">CONVENE ARCHIVE</p><h2>抽卡分析</h2><p class="lead">从库洛官方接口同步，记录只保存在本机。</p></div></header>
-      <form id="gacha-form" class="search-card">
-        <label for="gacha-url">游戏内唤取记录链接</label>
-        <textarea id="gacha-url" placeholder="粘贴 Client.log 中以 aki-gm-resources 开头的完整链接" required></textarea>
-        <button id="gacha-refresh" type="submit">同步抽卡记录</button>
-        <p id="gacha-status" role="status">先在游戏内打开一次“唤取记录”，再从日志复制链接</p>
-      </form>
-      <div class="gacha-help"><b>本地优先</b><p>链接只用于向库洛官方接口读取记录，不会保存其中的临时令牌。</p></div>
+    <section class="tracker-shell">
+      <header class="tracker-toolbar">
+        <div><strong>WuWa Tracker</strong><span id="tracker-platform"></span><small id="convene-status" role="status">正在准备抽卡追踪器…</small></div>
+        <div class="tracker-actions">
+          <button id="convene-refresh" type="button">自动获取链接</button>
+          <button type="button" data-tracker-page="import">导入记录</button>
+          <button type="button" data-tracker-page="tracker">查看分析</button>
+          <a id="tracker-external" href="https://wuwatracker.com/zh-CN/tracker" target="_blank" rel="noreferrer">新窗口 ↗</a>
+        </div>
+        <div id="convene-copy" hidden><input id="convene-url" type="password" readonly aria-label="已提取的抽卡链接"><button id="convene-copy-button" type="button">复制链接</button></div>
+      </header>
+      <iframe id="tracker-frame" title="WuWa Tracker 抽卡分析" src="https://wuwatracker.com/zh-CN/tracker" referrerpolicy="no-referrer" allow="clipboard-read; clipboard-write"></iframe>
     </section>
-    <section id="gacha-results" aria-live="polite"><div class="gacha-empty">同步后将在这里显示卡池分析</div></section>
   </main>
   <script type="module" src="/app.js"></script>
 </body>

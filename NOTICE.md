@@ -18,4 +18,4 @@ WuWaBuilds 仅作为公开 Build 数据来源，与本项目无隶属关系。
 
 这些游戏素材的相关权利归原权利人所有；本项目不将素材打包进发行文件。
 
-抽卡导入流程和卡池分类参考 MIT 许可的 [WuWa Local Tracker](https://github.com/dyar7474/WuWa_local_tracker)，本项目自行实现链接校验、官方接口代理、本地合并和页面展示，未复制其界面代码。
+抽卡分析由 [WuWa Tracker](https://wuwatracker.com/zh-CN/tracker) 提供。本项目仅参考其 GPL-3.0 许可的公开导入脚本，从本机日志提取临时唤取链接，并将网站嵌入本地页面；不会保存或代为上传该链接。

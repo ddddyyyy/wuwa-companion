@@ -131,23 +131,20 @@ h3 { margin: 0; font-size: 25px; }
 .weakest { margin: 0; align-self: center; color: #7f8990; font-size: 9px; }
 .weakest span { margin-right: 7px; border-radius: 4px; padding: 3px 6px; color: #d3bd82; background: rgba(215,189,120,.09); }
 .empty { color: #79838a; text-align: center; padding: 70px; }
-#gacha-view { grid-template-columns: clamp(320px, 27vw, 420px) minmax(0,1fr); }
-.gacha-controls textarea { width: 100%; min-height: 104px; resize: vertical; border: 1px solid #303841; border-radius: 9px; padding: 10px; color: #dce0e2; background: #0c1015; outline: none; font-size: 10px; }
-.gacha-controls textarea:focus { border-color: #9d864d; }
-.gacha-controls form > button { width: 100%; height: 42px; margin-top: 8px; border: 0; border-radius: 9px; color: #15130d; background: linear-gradient(135deg,#ecd89f,#b88e3d); font-weight: 750; cursor: pointer; }
-.gacha-controls form > button:disabled { opacity: .55; }
-.gacha-help { margin-top: auto; border: 1px solid var(--line); border-radius: 12px; padding: 13px; color: #768088; background: #10151a; font-size: 9px; line-height: 1.6; }
-.gacha-help b { color: #d8c18a; }.gacha-help p { margin: 4px 0 0; }
-#gacha-results { height: 100vh; overflow-y: auto; padding: 28px 32px 50px; scrollbar-width: thin; }
-.gacha-empty { display: grid; place-items: center; min-height: 100%; color: #667078; }
-.gacha-heading { display: flex; align-items: end; justify-content: space-between; }
-.gacha-heading h2 { margin-bottom: 0; }.gacha-heading > span { color: #68727a; font-size: 9px; }
-.gacha-overview { display: grid; grid-template-columns: repeat(4,1fr); gap: 1px; margin: 20px 0; overflow: hidden; border: 1px solid var(--line); border-radius: 12px; background: var(--line); }
-.gacha-overview > div { display: grid; gap: 5px; padding: 14px 16px; background: #10151a; }.gacha-overview small { color: #737d84; font-size: 9px; }.gacha-overview strong { font-size: 22px; }
-.banner-list { display: grid; gap: 12px; }.banner-card { width: 100%; display: grid; grid-template-columns: minmax(210px,.9fr) minmax(170px,.65fr) minmax(220px,1fr); gap: 20px; padding: 18px; border-color: var(--line); background: #12171c; }
-.pity { display: grid; align-content: start; }.pity > span { color: #d9c27f; font-size: 12px; }.pity > strong { margin: 8px 0; font-size: 34px; }.pity > strong small { color: #68727a; font-size: 13px; }.pity i { height: 7px; overflow: hidden; border-radius: 99px; background: #252c31; }.pity i b { display: block; height: 100%; background: linear-gradient(90deg,#3c9a5b,#d4b956); }.pity em { margin-top: 7px; color: #727c83; font-size: 9px; font-style: normal; }
-.banner-stats { display: grid; align-content: center; gap: 8px; }.banner-stats span { display: flex; justify-content: space-between; color: #7f8990; font-size: 10px; }.banner-stats b { color: #e4e1da; }
-.five-history { min-width: 0; }.five-history > b { color: #d9c27f; font-size: 10px; }.five-history > div { display: grid; grid-template-columns: minmax(0,1fr) auto auto; gap: 9px; padding: 6px 0; border-bottom: 1px solid var(--line); font-size: 9px; }.five-history span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }.five-history strong { color: #e1b96b; }.five-history small,.five-history p { color: #68727a; }
+#gacha-view { display: block; }
+.tracker-shell { height: 100vh; display: grid; grid-template-rows: auto minmax(0,1fr); background: #111115; }
+.tracker-toolbar { display: grid; grid-template-columns: minmax(160px,1fr) auto; align-items: center; gap: 9px 18px; padding: 10px 16px; border-bottom: 1px solid var(--line); background: #0d1116; }
+.tracker-toolbar > div:first-child { display: flex; align-items: baseline; gap: 8px; min-width: 0; }
+.tracker-toolbar strong { color: #f0dfae; font-size: 13px; }
+.tracker-toolbar span { border-radius: 99px; padding: 2px 7px; color: #d9c27f; background: rgba(215,189,120,.1); font-size: 8px; }
+.tracker-toolbar small { overflow: hidden; color: #758089; font-size: 9px; text-overflow: ellipsis; white-space: nowrap; }
+.tracker-actions { display: flex; gap: 7px; }
+.tracker-actions button, .tracker-actions a, #convene-copy button { border: 1px solid var(--line); border-radius: 8px; padding: 7px 10px; color: #b7bec3; background: #151a20; font-size: 9px; text-decoration: none; cursor: pointer; }
+.tracker-actions button:first-child { border-color: #c9aa5f; color: #17140c; background: linear-gradient(135deg,#ecd89f,#b88e3d); font-weight: 750; }
+.tracker-actions button:disabled { cursor: wait; opacity: .55; }
+#convene-copy { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 8px; }
+#convene-copy input { height: 30px; padding: 0 10px; font-size: 9px; }
+#tracker-frame { width: 100%; height: 100%; border: 0; background: #111115; }
 @media (max-width: 900px) {
   html, body { height: auto; overflow: auto; }
   body { display: block; }
@@ -156,11 +153,12 @@ h3 { margin: 0; font-size: 25px; }
   .brand div { display: block; }
   nav, .source { display: none; }
   main { height: auto; display: block; }
-  #gacha-view { display: block; }
+  #gacha-view { display: block; height: calc(100vh - 69px); }
   .controls { padding: 22px 16px 14px; }
   #builds { height: auto; padding: 8px; overflow: auto; }
-  #gacha-results { height: auto; min-height: 70vh; padding: 20px 16px; }
-  .banner-card { grid-template-columns: 1fr; }
+  .tracker-shell { height: 100%; }
+  .tracker-toolbar { grid-template-columns: 1fr; }
+  .tracker-actions { flex-wrap: wrap; }
   .build-card { width: min(560px, 100%); height: auto; grid-template-rows: 330px auto auto auto; transform: none !important; }
 }
 @media (max-width: 620px) {
