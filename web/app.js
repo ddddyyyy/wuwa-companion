@@ -10,7 +10,6 @@ const roster = document.querySelector('#roster');
 const builds = document.querySelector('#builds');
 let currentBuilds = [];
 let selectedCharacterId;
-let cardObserver;
 const skillNames = ['常态', '技能', '解放', '变奏', '回路', '延奏'];
 const statNames = {
   HP: '生命', 'HP%': '生命百分比', ATK: '攻击', 'ATK%': '攻击百分比', DEF: '防御', 'DEF%': '防御百分比',
@@ -84,19 +83,7 @@ roster.addEventListener('click', event => {
 function showSelected() {
   const build = currentBuilds.find(item => item.characterId === selectedCharacterId);
   builds.replaceChildren(buildCard(build));
-  fitCard();
 }
-
-function fitCard() {
-  const article = builds.querySelector('article');
-  if (!article || innerWidth <= 900) return;
-  article.style.transform = 'none';
-  const scale = Math.min((builds.clientWidth - 4) / article.offsetWidth, (builds.clientHeight - 4) / article.offsetHeight);
-  article.style.transform = `scale(${Math.min(scale, 1.35)})`;
-}
-
-cardObserver = new ResizeObserver(fitCard);
-cardObserver.observe(builds);
 
 function buildCard(build) {
   const score = scoreBuild(build);
@@ -114,11 +101,10 @@ function buildCard(build) {
   const weaponArt = asset('waves_weapon', `weapon_${build.weaponId}.png`);
   article.innerHTML = `
     <div class="profile-panel">
-      <div class="character-title"><span>LV.${build.characterLevel || '—'}</span><h3>${escapeHTML(character)}</h3></div>
       <div class="character-art"><img src="${characterArt}" alt="" loading="lazy">
-        <div class="skills"><b>共鸣链 ${build.sequence}</b>${forte.map((level, index) => `<span><i>${skillNames[index]}</i>${level}</span>`).join('')}</div>
+        <b class="sequence">共鸣链 ${build.sequence}</b><div class="skills">${forte.map((level, index) => `<span><i>${skillNames[index]}</i>${level}</span>`).join('')}</div>
       </div>
-      <div class="stat-panel"><div class="panel-label"><b>声骸词条合计</b><small>默认角色权重 1</small></div>${stats.map(([name, value, tone]) => `<div class="stat-row ${tone}"><span>${escapeHTML(statNames[name] || name)}</span><strong>${formatStat(name, value)}</strong></div>`).join('')}</div>
+      <div class="stat-column"><div class="character-title"><span>LV.${build.characterLevel || '—'}</span><h3>${escapeHTML(character)}</h3></div><div class="panel-label"><b>声骸词条合计</b><small>默认角色权重 1</small></div><div class="stat-panel">${stats.map(([name, value, tone]) => `<div class="stat-row ${tone}"><span>${escapeHTML(statNames[name] || name)}</span><strong>${formatStat(name, value)}</strong></div>`).join('')}</div></div>
     </div>
     <div class="equipment-row"><div class="weapon-card"><img src="${weaponArt}" alt="" loading="lazy"><div><strong>${escapeHTML(weapon)}</strong><span>LV.${build.weaponLevel || '—'} · 谐振 ${build.weaponRank || '—'} 阶</span></div></div><div class="total">${rating}</div></div>
     ${score.available ? `<div class="progress"><span>经初步评估，你的声骸评价：</span><strong>${score.grade}</strong><i><b style="width:${Math.min(score.total / 250 * 100, 100)}%"></b></i><em>${number(score.total / 250 * 100)}%</em></div>` : ''}
@@ -132,8 +118,8 @@ function echoCard(echo, score) {
   const contributions = score?.contributions || [];
   const icon = echo.resourceId ? `<img src="${currentAsset('phantom', `phantom_${echo.resourceId}.png`)}" alt="">` : '<span class="echo-placeholder">◇</span>';
   return `<section class="echo ${gradeName}"><div class="echo-head">${icon}<div><b>${escapeHTML(echo.name || `${echo.cost} COST 声骸`)}</b><small>LV.${echo.level} · C${echo.cost}</small></div><strong>${score ? `${number(score.value)} ${score.grade}` : '—'}</strong></div>
-    <div class="echo-stats"><b class="${contributionTone(contributions[0])}">${escapeHTML(statNames[echo.mainStat.type] || echo.mainStat.type)}</b><strong class="${contributionTone(contributions[0])}">${formatStat(echo.mainStat.type, echo.mainStat.value)}</strong>
-    ${echo.subStats.map((stat, index) => { const tone = contributionTone(contributions[index + 2], stat); return `<span class="${tone}">${escapeHTML(statNames[stat.type] || stat.type)}</span><em class="${tone}">${formatStat(stat.type, stat.value)}</em>`; }).join('')}</div></section>`;
+    <div class="echo-main ${contributionTone(contributions[0])}"><small>主词条</small><b>${escapeHTML(statNames[echo.mainStat.type] || echo.mainStat.type)}</b><strong>${formatStat(echo.mainStat.type, echo.mainStat.value)}</strong></div>
+    <div class="echo-subs">${echo.subStats.map((stat, index) => { const tone = contributionTone(contributions[index + 2], stat); return `<span class="${tone}">${escapeHTML(statNames[stat.type] || stat.type)}</span><em class="${tone}">${formatStat(stat.type, stat.value)}</em>`; }).join('')}</div></section>`;
 }
 
 function visibleStats(build, rule) {
