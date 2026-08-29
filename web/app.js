@@ -1,4 +1,4 @@
-import { compareBuild, scoreBuild, scoreEcho, selectCharacterRule } from '/core.js';
+import { compareBuild, scoreBuild, scoreEcho, selectCharacterRule, validateEchoInventory } from '/core.js';
 import { characterNames, weaponNames } from '/character-rules.js';
 
 const form = document.querySelector('#profile-form');
@@ -24,9 +24,12 @@ const echoCount = document.querySelector('#echo-count');
 const echoScanButton = document.querySelector('#echo-scan');
 const echoScanStatus = document.querySelector('#echo-scan-status');
 const scannerCheck = document.querySelector('#echo-scanner-check');
+const scanPreviewButton = document.querySelector('#echo-scan-preview');
+const scanPreview = document.querySelector('#scan-preview');
 const inventorySummary = document.querySelector('#inventory-summary');
 const inventoryList = document.querySelector('#inventory-list');
 const inventoryExport = document.querySelector('#inventory-export');
+const inventoryImport = document.querySelector('#inventory-import');
 let currentBuilds = [];
 let previousBuilds = [];
 let selectedCharacterId;
@@ -102,8 +105,10 @@ form.addEventListener('submit', async event => {
 
 conveneButton.addEventListener('click', extractConveneLink);
 scannerCheck.addEventListener('click', checkEchoScanner);
+scanPreviewButton.addEventListener('click', previewEchoScan);
 echoScanForm.addEventListener('submit', scanEchoInventory);
 inventoryExport.addEventListener('click', exportInventory);
+inventoryImport.addEventListener('change', importInventory);
 document.querySelector('#convene-copy-button').addEventListener('click', copyConveneLink);
 document.querySelectorAll('[data-tracker-page]').forEach(button => button.addEventListener('click', () => showTrackerPage(button.dataset.trackerPage)));
 
@@ -193,31 +198,60 @@ async function checkEchoScanner() {
 
 async function scanEchoInventory(event) {
   event.preventDefault();
+  await runEchoScan(echoCount.value ? Number(echoCount.value) : 0, true);
+}
+
+async function previewEchoScan() {
+  await runEchoScan(1, false);
+}
+
+async function runEchoScan(limit, save) {
   echoScanButton.disabled = true;
   scannerCheck.disabled = true;
-  const limit = echoCount.value ? Number(echoCount.value) : 0;
-  echoScanStatus.textContent = '扫描开始后会切换到游戏，请不要操作鼠标。声骸较多时需要几分钟…';
+  scanPreviewButton.disabled = true;
+  echoScanStatus.textContent = save ? '扫描开始后会切换到游戏，请不要操作鼠标。声骸较多时需要几分钟…' : '正在预检第一件声骸…';
+  const progressTimer = setInterval(updateScanProgress, 800);
+  if (save) scanPreview.innerHTML = '';
   try {
     const response = await fetch('/api/echo-scan', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ limit }) });
     const data = await response.json();
     if (!response.ok) throw new Error(data.error || '扫描失败');
-    inventoryData = data;
-    localStorage.setItem('wuwa-echo-inventory', JSON.stringify(data));
-    renderInventory();
     const invalid = data.echoes.filter(echo => !echo.valid).length;
-    echoScanStatus.textContent = `已扫描 ${data.echoes.length} 个声骸${invalid ? `，${invalid} 个需要校对` : ''}`;
+    if (save) {
+      inventoryData = data;
+      localStorage.setItem('wuwa-echo-inventory', JSON.stringify(data));
+      renderInventory();
+      echoScanStatus.textContent = `${data.partial || data.cancelled ? '扫描已中断，已保留' : '已扫描'} ${data.echoes.length} 个声骸${invalid ? `，${invalid} 个需要校对` : ''}${data.error ? `；${data.error}` : ''}`;
+    } else {
+      const echo = data.echoes[0];
+      scanPreview.innerHTML = echo ? `<div><strong>预检结果</strong><span>确认名称、主词条和副词条正确后，再开始全量扫描。</span></div>${inventoryEchoCard(echo, selectedInventoryRule())}` : '';
+      echoScanStatus.textContent = echo?.valid ? '预检通过，可以开始全量扫描' : `预检需要校对：${echo?.issues?.join('；') || '没有识别到声骸'}`;
+    }
   } catch (error) { echoScanStatus.textContent = error.message; }
-  finally { echoScanButton.disabled = false; scannerCheck.disabled = false; }
+  finally { clearInterval(progressTimer); echoScanButton.disabled = false; scannerCheck.disabled = false; scanPreviewButton.disabled = false; }
+}
+
+async function updateScanProgress() {
+  try {
+    const response = await fetch('/api/echo-scan-progress');
+    const data = await response.json();
+    if (data.running && data.requested) echoScanStatus.textContent = `正在扫描 ${data.scanned} / ${data.requested}，按 Esc 可中止…`;
+  } catch { /* 下一次轮询重试 */ }
 }
 
 function renderInventory() {
   const items = inventoryData?.echoes || [];
   const build = currentBuilds.find(item => item.characterId === selectedCharacterId);
-  const selected = build && selectCharacterRule(build);
+  const rule = selectedInventoryRule();
   const valid = items.filter(echo => echo.valid);
   inventoryExport.disabled = !items.length;
   inventorySummary.innerHTML = items.length ? `<div><small>已扫描</small><strong>${items.length}</strong></div><div><small>识别完整</small><strong>${valid.length}</strong></div><div><small>当前评分角色</small><strong>${escapeHTML(build ? characterNames[build.characterId] || build.characterId : '未选择')}</strong></div>` : '';
-  inventoryList.innerHTML = items.length ? items.map(echo => inventoryEchoCard(echo, selected?.rule)).join('') : '<div class="empty">还没有扫描声骸</div>';
+  inventoryList.innerHTML = items.length ? items.map(echo => inventoryEchoCard(echo, rule)).join('') : '<div class="empty">还没有扫描声骸</div>';
+}
+
+function selectedInventoryRule() {
+  const build = currentBuilds.find(item => item.characterId === selectedCharacterId);
+  return build && selectCharacterRule(build)?.rule;
 }
 
 function inventoryEchoCard(echo, rule) {
@@ -232,6 +266,21 @@ function exportInventory() {
   link.download = `wuwa-echoes-${new Date().toISOString().slice(0, 10)}.json`;
   link.click();
   URL.revokeObjectURL(link.href);
+}
+
+async function importInventory() {
+  const file = inventoryImport.files[0];
+  inventoryImport.value = '';
+  if (!file) return;
+  try {
+    if (file.size > 10_000_000) throw new Error('库存文件不能超过 10 MB');
+    const data = validateEchoInventory(JSON.parse(await file.text()));
+    if (inventoryData?.echoes?.length && !confirm('导入会替换当前本地声骸库存，确定继续吗？')) return;
+    inventoryData = data;
+    localStorage.setItem('wuwa-echo-inventory', JSON.stringify(data));
+    renderInventory();
+    echoScanStatus.textContent = `已导入 ${data.echoes.length} 个声骸`;
+  } catch (error) { echoScanStatus.textContent = error.message; }
 }
 
 function renderDifference(build) {

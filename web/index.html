@@ -56,14 +56,14 @@
     <section class="inventory-shell">
       <header>
         <div><p class="eyebrow">ECHO INVENTORY</p><h2>声骸仓库</h2><p class="lead">从 macOS 鸣潮窗口读取声骸，数据只保存在本机。</p></div>
-        <button id="inventory-export" class="external" type="button" disabled>导出 JSON</button>
+        <div class="inventory-actions"><label class="external" for="inventory-import">导入 JSON</label><input id="inventory-import" type="file" accept="application/json,.json" hidden><button id="inventory-export" class="external" type="button" disabled>导出 JSON</button></div>
       </header>
       <div class="inventory-top">
         <form id="echo-scan-form" class="scanner-card">
           <label for="echo-count">要扫描的声骸数量</label>
           <div class="scan-row"><input id="echo-count" type="number" min="1" max="2000" placeholder="留空自动识别"><button id="echo-scan" type="submit">开始扫描</button></div>
           <p id="echo-scan-status" role="status">先在游戏中打开“背包 → 声骸”，滚动到列表顶部。</p>
-          <button id="echo-scanner-check" class="quiet-button" type="button">检查游戏与系统权限</button>
+          <div class="scanner-actions"><button id="echo-scanner-check" class="quiet-button" type="button">检查游戏与系统权限</button><button id="echo-scan-preview" class="quiet-button" type="button">预检首件声骸</button></div>
         </form>
         <section class="scan-guide">
           <strong>扫描前准备</strong>
@@ -71,6 +71,7 @@
           <small>首次使用会请求“屏幕录制”和“辅助功能”权限。</small>
         </section>
       </div>
+      <section id="scan-preview" aria-live="polite"></section>
       <section id="inventory-summary" aria-live="polite"></section>
       <section id="inventory-list" aria-live="polite"><div class="empty">还没有扫描声骸</div></section>
     </section>

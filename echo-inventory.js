@@ -60,6 +60,7 @@ export function parseEchoScanBatch(result) {
   return {
     platform: 'macos', scannedAt: new Date().toISOString(),
     requested: result.requested, detected: result.detected,
+    cancelled: Boolean(result.cancelled),
     echoes: result.echoes.map(parseEchoScan)
   };
 }

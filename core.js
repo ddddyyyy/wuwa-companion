@@ -12,6 +12,20 @@ export function parseUID(input) {
   return match[1];
 }
 
+export function validateEchoInventory(data) {
+  const validStat = stat => stat && typeof stat.type === 'string' && stat.type.length <= 80 &&
+    Number.isFinite(Number(stat.value)) && Number(stat.value) >= 0 && Number(stat.value) <= 10_000;
+  const validEcho = echo => echo && typeof echo.name === 'string' && echo.name.length <= 80 &&
+    (echo.resourceId == null || /^\d{5,12}$/.test(String(echo.resourceId))) &&
+    [0, 1, 3, 4].includes(Number(echo.cost)) && Number(echo.level) >= 0 && Number(echo.level) <= 25 &&
+    (echo.mainStat == null || validStat(echo.mainStat)) && Array.isArray(echo.subStats) && echo.subStats.length <= 5 &&
+    echo.subStats.every(validStat) && Array.isArray(echo.issues) && echo.issues.every(issue => typeof issue === 'string' && issue.length <= 120);
+  if (!data || !Array.isArray(data.echoes) || data.echoes.length > 2000 || !data.echoes.every(validEcho)) {
+    throw new Error('不是 WuWa Companion 导出的声骸库存文件');
+  }
+  return data;
+}
+
 export function normalizeBuild(detail) {
   const panels = detail?.buildState?.echoPanels;
   const mains = detail?.echoSummary?.mainStats;

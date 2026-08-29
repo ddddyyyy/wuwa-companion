@@ -1,5 +1,5 @@
 import { execFile } from 'node:child_process';
-import { mkdir, stat } from 'node:fs/promises';
+import { mkdir, readFile, rm, stat } from 'node:fs/promises';
 import { promisify } from 'node:util';
 import { join } from 'node:path';
 import { parseEchoScanBatch } from './echo-inventory.js';
@@ -8,6 +8,7 @@ const run = promisify(execFile);
 const source = join(import.meta.dirname, 'macos/echo-scanner.swift');
 const buildDirectory = join(import.meta.dirname, '.build');
 const binary = join(buildDirectory, 'macos-echo-scanner');
+const progressFile = join(buildDirectory, 'echo-scan-progress.json');
 let scanning = false;
 
 export async function echoScannerStatus() {
@@ -25,8 +26,20 @@ export async function scanMacEchoes(limit = 0) {
     await ensureScanner();
     const diagnostics = join(buildDirectory, 'echo-scan-failures');
     await mkdir(diagnostics, { recursive: true });
-    return parseEchoScanBatch(await runScanner(['--limit', String(limit), '--diagnostics', diagnostics]));
+    await rm(progressFile, { force: true });
+    try {
+      return parseEchoScanBatch(await runScanner(['--limit', String(limit), '--diagnostics', diagnostics, '--output', progressFile]));
+    } catch (error) {
+      const partial = await readProgress();
+      if (!partial?.echoes?.length) throw error;
+      return { ...parseEchoScanBatch(partial), partial: true, error: error.message };
+    }
   } finally { scanning = false; }
+}
+
+export async function echoScannerProgress() {
+  const progress = await readProgress();
+  return { running: scanning, scanned: progress?.echoes?.length || 0, requested: progress?.requested || 0, detected: progress?.detected || 0 };
 }
 
 async function ensureScanner() {
@@ -48,6 +61,11 @@ async function runScanner(arguments_) {
   } catch (error) {
     throw new Error(error.stderr?.trim() || '声骸扫描失败');
   }
+}
+
+async function readProgress() {
+  try { return JSON.parse(await readFile(progressFile, 'utf8')); }
+  catch (error) { if (error.code === 'ENOENT') return null; throw error; }
 }
 
 function requireMacOS() {

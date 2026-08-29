@@ -5,7 +5,7 @@ import { dirname, join } from 'node:path';
 import { parseUID, normalizeBuild } from './core.js';
 import { findConveneLink, trackerPlatform } from './convene-link.js';
 import { wwuidMeta } from './character-rules.js';
-import { echoScannerStatus, scanMacEchoes } from './echo-scanner.js';
+import { echoScannerProgress, echoScannerStatus, scanMacEchoes } from './echo-scanner.js';
 
 const root = dirname(fileURLToPath(import.meta.url));
 const port = Number(process.env.PORT || 4173);
@@ -113,6 +113,9 @@ export const server = createServer(async (request, response) => {
     }
     if (request.method === 'GET' && url.pathname === '/api/echo-scanner') {
       return sendJSON(response, 200, await echoScannerStatus());
+    }
+    if (request.method === 'GET' && url.pathname === '/api/echo-scan-progress') {
+      return sendJSON(response, 200, await echoScannerProgress());
     }
     if (request.method === 'POST' && url.pathname === '/api/echo-scan') {
       const input = await readJSON(request);

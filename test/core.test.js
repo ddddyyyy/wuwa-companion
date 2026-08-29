@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { compareBuild, parseUID, normalizeBuild, scoreBuild, scoreEcho, selectCharacterRule } from '../core.js';
+import { compareBuild, parseUID, normalizeBuild, scoreBuild, scoreEcho, selectCharacterRule, validateEchoInventory } from '../core.js';
 import { characterRuleSets, wwuidMeta } from '../character-rules.js';
 import { candidateLogPaths, extractConveneURL, trackerPlatform } from '../convene-link.js';
 import { parseEchoScan, parseEchoScanBatch } from '../echo-inventory.js';
@@ -112,4 +112,11 @@ test('normalizes macOS OCR output into a scored echo shape', () => {
   assert.deepEqual(echo.subStats[0], { type: 'Crit DMG', value: 21 });
   assert.equal(echo.valid, true);
   assert.equal(parseEchoScanBatch({ requested: 1, detected: 1, echoes: [raw] }).echoes.length, 1);
+});
+
+test('validates imported inventory before rendering resource URLs', () => {
+  const inventory = { echoes: [{ name: '阿嗞嗞', resourceId: '390070067', cost: 1, level: 25,
+    mainStat: { type: 'ATK%', value: 18 }, subStats: [{ type: 'Crit Rate', value: 10.5 }], issues: [] }] };
+  assert.equal(validateEchoInventory(inventory), inventory);
+  assert.throws(() => validateEchoInventory({ echoes: [{ ...inventory.echoes[0], resourceId: '1" onerror="alert(1)' }] }));
 });

@@ -148,7 +148,14 @@ func detectedCount(_ window: GameWindow, layout: Layout) async throws -> Int {
     throw ScannerError.message("无法识别声骸数量，请在页面中手动填写要扫描的数量")
 }
 
-func scan(limit: Int, diagnostics: String) async throws -> ScanResult {
+func saveProgress(_ result: ScanResult, path: String) throws {
+    guard !path.isEmpty else { return }
+    let encoder = JSONEncoder()
+    encoder.outputFormatting = [.sortedKeys]
+    try encoder.encode(result).write(to: URL(fileURLWithPath: path), options: .atomic)
+}
+
+func scan(limit: Int, diagnostics: String, output: String) async throws -> ScanResult {
     try requirePermissions()
     guard let window = try await gameWindow() else { throw ScannerError.message("没有找到鸣潮游戏窗口") }
     NSRunningApplication(processIdentifier: window.pid)?.activate(options: [.activateAllWindows])
@@ -159,6 +166,7 @@ func scan(limit: Int, diagnostics: String) async throws -> ScanResult {
     let requested = limit > 0 ? min(limit, detected) : detected
     var echoes: [RawEcho] = []
     var cancelled = false
+    try saveProgress(ScanResult(requested: requested, detected: detected, cancelled: false, windowOwner: activeWindow.owner, echoes: []), path: output)
 
     for index in 0..<requested {
         if CGEventSource.keyState(.combinedSessionState, key: 53) { cancelled = true; break }
@@ -190,8 +198,11 @@ func scan(limit: Int, diagnostics: String) async throws -> ScanResult {
         try await Task.sleep(for: .milliseconds(120))
         let screenshot = card.isEmpty || names.count < 2 || values.count < 2 ? saveDiagnostic(image, index: index, directory: diagnostics) : nil
         echoes.append(RawEcho(index: index, card: card, statNames: names, statValues: values, sonata: sonata, screenshot: screenshot))
+        try saveProgress(ScanResult(requested: requested, detected: detected, cancelled: false, windowOwner: activeWindow.owner, echoes: echoes), path: output)
     }
-    return ScanResult(requested: requested, detected: detected, cancelled: cancelled, windowOwner: activeWindow.owner, echoes: echoes)
+    let result = ScanResult(requested: requested, detected: detected, cancelled: cancelled, windowOwner: activeWindow.owner, echoes: echoes)
+    try saveProgress(result, path: output)
+    return result
 }
 
 func printJSON<T: Encodable>(_ value: T) throws {
@@ -214,7 +225,8 @@ struct Main {
             } else {
                 let limit = arguments.firstIndex(of: "--limit").flatMap { $0 + 1 < arguments.count ? Int(arguments[$0 + 1]) : nil } ?? 0
                 let diagnostics = arguments.firstIndex(of: "--diagnostics").flatMap { $0 + 1 < arguments.count ? arguments[$0 + 1] : nil } ?? NSTemporaryDirectory()
-                try await printJSON(scan(limit: limit, diagnostics: diagnostics))
+                let output = arguments.firstIndex(of: "--output").flatMap { $0 + 1 < arguments.count ? arguments[$0 + 1] : nil } ?? ""
+                try await printJSON(scan(limit: limit, diagnostics: diagnostics, output: output))
             }
         } catch {
             FileHandle.standardError.write(Data((error.localizedDescription + "\n").utf8))
