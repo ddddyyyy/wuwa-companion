@@ -301,17 +301,37 @@ function weaponLabel(build) {
   return `${build.weaponName || weaponNames[build.weaponId] || '未知武器'} R${build.weaponRank || '—'}`;
 }
 
-ruleUpdate.addEventListener('click', () => ruleUpdate.dataset.url ? window.open(ruleUpdate.dataset.url, '_blank', 'noopener') : checkRuleUpdate());
+ruleUpdate.addEventListener('click', () => ruleUpdate.dataset.available ? updateRuleConfig() : checkRuleUpdate());
 async function checkRuleUpdate() {
+  ruleUpdate.disabled = true;
+  ruleUpdate.textContent = '正在检查评分配置…';
   try {
     const response = await fetch('/api/scoring-update');
     const data = await response.json();
     if (!response.ok) throw new Error(data.error || '检查失败');
-    ruleUpdate.textContent = data.available ? '发现新的评分配置 ↗' : '评分配置已是最新';
-    if (data.available) ruleUpdate.dataset.url = data.url;
+    ruleUpdate.textContent = data.available ? '更新评分配置' : '评分配置已是最新 · 点击检查';
+    ruleUpdate.dataset.available = data.available ? 'true' : '';
   } catch (error) {
     ruleUpdate.textContent = '评分配置检查失败，点击重试';
     ruleUpdate.title = error.message;
+  } finally { ruleUpdate.disabled = false; }
+}
+
+async function updateRuleConfig() {
+  if (!window.confirm('更新会替换本机评分配置，完成后页面将刷新。是否继续？')) return;
+  ruleUpdate.disabled = true;
+  ruleUpdate.textContent = '正在更新评分配置…';
+  try {
+    const response = await fetch('/api/scoring-update', { method: 'POST', headers: { 'x-wuwa-action': 'update-scoring' } });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || '更新失败');
+    ruleUpdate.textContent = data.updated ? '更新完成，正在刷新…' : '评分配置已是最新';
+    if (data.updated) location.reload();
+  } catch (error) {
+    ruleUpdate.textContent = '更新失败，点击重试';
+    ruleUpdate.title = error.message;
+    ruleUpdate.dataset.available = 'true';
+    ruleUpdate.disabled = false;
   }
 }
 

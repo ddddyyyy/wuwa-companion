@@ -83,7 +83,7 @@ npm test
 npm run sync:wwuid
 ```
 
-普通用户启动时只会检查 GitHub 上的 WWUID 版本，不会自动改写本地评分配置。评分参考和第三方许可见 [NOTICE](NOTICE.md)，设计说明见 [docs/build-card-echo-scoring-design.md](docs/build-card-echo-scoring-design.md)。
+普通用户启动时会检查 GitHub 上的 WWUID 版本；发现新版后可点击侧栏按钮主动更新。更新失败会自动恢复原配置。评分参考和第三方许可见 [NOTICE](NOTICE.md)，设计说明见 [docs/build-card-echo-scoring-design.md](docs/build-card-echo-scoring-design.md)。
 
 ## 许可与声明
 

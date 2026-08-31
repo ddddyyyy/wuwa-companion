@@ -1,10 +1,11 @@
 import { createServer } from 'node:http';
-import { readFile } from 'node:fs/promises';
+import { execFile } from 'node:child_process';
+import { readFile, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
+import { promisify } from 'node:util';
 import { dirname, join } from 'node:path';
 import { parseUID, normalizeBuild } from './core.js';
 import { findConveneLink, trackerPlatform } from './convene-link.js';
-import { wwuidMeta } from './character-rules.js';
 import { echoScannerProgress, echoScannerStatus, scanMacEchoes } from './echo-scanner.js';
 
 const root = dirname(fileURLToPath(import.meta.url));
@@ -13,6 +14,8 @@ const apiOrigin = 'https://api.wuwa.build';
 const resourceOrigin = 'https://ww1.loping151.top';
 const resourceCache = new Map();
 let scoringUpdateCache;
+let scoringUpdatePromise;
+const runFile = promisify(execFile);
 const staticFiles = new Map([
   ['/', ['web/index.html', 'text/html; charset=utf-8']],
   ['/app.js', ['web/app.js', 'text/javascript; charset=utf-8']],
@@ -79,8 +82,8 @@ export async function loadLatestBuilds(input) {
   return data;
 }
 
-export async function checkScoringUpdate() {
-  if (scoringUpdateCache && Date.now() - scoringUpdateCache.time < 3_600_000) return scoringUpdateCache.data;
+export async function checkScoringUpdate(force = false) {
+  if (!force && scoringUpdateCache && Date.now() - scoringUpdateCache.time < 3_600_000) return scoringUpdateCache.data;
   const response = await fetch('https://api.github.com/repos/raared/WWUID/commits/master', {
     headers: { accept: 'application/vnd.github+json', 'user-agent': 'wuwa-companion' }, redirect: 'manual', signal: AbortSignal.timeout(10_000)
   });
@@ -89,9 +92,32 @@ export async function checkScoringUpdate() {
   if (!/^[a-f0-9]{40}$/.test(value?.sha) || !/^https:\/\/github\.com\/raared\/WWUID\/commit\/[a-f0-9]{40}$/.test(value?.html_url)) {
     throw new Error('WWUID 版本信息格式已变化');
   }
-  const data = { current: wwuidMeta.commit, latest: value.sha, available: value.sha !== wwuidMeta.commit, url: value.html_url };
+  const current = JSON.parse(await readFile(join(root, 'wwuid-sync-report.json'), 'utf8')).commit;
+  const data = { current, latest: value.sha, available: value.sha !== current, url: value.html_url };
   scoringUpdateCache = { time: Date.now(), data };
   return data;
+}
+
+export async function updateScoringRules() {
+  if (scoringUpdatePromise) return scoringUpdatePromise;
+  scoringUpdatePromise = (async () => {
+    const update = await checkScoringUpdate(true);
+    if (!update.available) return { ...update, updated: false };
+    const files = ['character-rules.js', 'echo-data.js', 'wwuid-sync-report.json', 'LICENSE'];
+    const backups = await Promise.all(files.map(file => readFile(join(root, file))));
+    try {
+      await runFile(process.execPath, [join(root, 'scripts/sync-wwuid.js'), '--commit', update.latest], { timeout: 120_000 });
+      const installed = JSON.parse(await readFile(join(root, 'wwuid-sync-report.json'), 'utf8')).commit;
+      if (installed !== update.latest) throw new Error('同步后的版本与目标版本不一致');
+      const result = { ...update, current: installed, available: false, updated: true };
+      scoringUpdateCache = { time: Date.now(), data: result };
+      return result;
+    } catch (error) {
+      await Promise.all(files.map((file, index) => writeFile(join(root, file), backups[index])));
+      throw new Error(`评分配置更新失败：${error.stderr?.trim() || error.message}`);
+    }
+  })().finally(() => { scoringUpdatePromise = undefined; });
+  return scoringUpdatePromise;
 }
 
 export const server = createServer(async (request, response) => {
@@ -110,6 +136,10 @@ export const server = createServer(async (request, response) => {
     }
     if (request.method === 'GET' && url.pathname === '/api/scoring-update') {
       return sendJSON(response, 200, await checkScoringUpdate());
+    }
+    if (request.method === 'POST' && url.pathname === '/api/scoring-update') {
+      if (request.headers['x-wuwa-action'] !== 'update-scoring') return sendJSON(response, 403, { error: '更新请求校验失败' });
+      return sendJSON(response, 200, await updateScoringRules());
     }
     if (request.method === 'GET' && url.pathname === '/api/echo-scanner') {
       return sendJSON(response, 200, await echoScannerStatus());

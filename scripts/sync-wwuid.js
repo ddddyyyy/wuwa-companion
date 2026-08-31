@@ -3,10 +3,13 @@ import { cp, mkdtemp, readFile, readdir, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 
-const commit = '1d0ed3b7bc640cdf05b9320e5d514227549bf0c2';
 const repository = 'https://github.com/raared/WWUID.git';
 const currentResource = 'https://ww1.loping151.top/XutheringWavesUID/resource/map/character';
 const root = resolve(import.meta.dirname, '..');
+const commitOption = process.argv.indexOf('--commit');
+const pinnedCommit = JSON.parse(await readFile(join(root, 'wwuid-sync-report.json'), 'utf8')).commit;
+const commit = commitOption >= 0 ? process.argv[commitOption + 1] : pinnedCommit;
+if (!/^[a-f0-9]{40}$/.test(commit || '')) throw new Error('请提供完整的 WWUID Commit SHA');
 const sourceOption = process.argv.indexOf('--source');
 let source = sourceOption >= 0 ? resolve(process.argv[sourceOption + 1] || '') : null;
 let temporary;

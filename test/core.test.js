@@ -4,6 +4,7 @@ import { compareBuild, parseUID, normalizeBuild, scoreBuild, scoreEcho, selectCh
 import { characterRuleSets, wwuidMeta } from '../character-rules.js';
 import { candidateLogPaths, extractConveneURL, trackerPlatform } from '../convene-link.js';
 import { parseEchoScan, parseEchoScanBatch } from '../echo-inventory.js';
+import { server } from '../server.js';
 
 test('accepts UID and exact WuWaBuilds profile URL only', () => {
   assert.equal(parseUID('700000001'), '700000001');
@@ -49,9 +50,11 @@ test('scores only the character matching elemental main stat', () => {
 });
 
 test('contains the complete pinned WWUID character configuration', () => {
-  assert.equal(wwuidMeta.commit, '1d0ed3b7bc640cdf05b9320e5d514227549bf0c2');
-  assert.equal(wwuidMeta.characterDirectories, 49);
-  assert.equal(wwuidMeta.templates, 50);
+  assert.match(wwuidMeta.commit, /^[a-f0-9]{40}$/);
+  assert.equal(wwuidMeta.characterIds, Object.keys(characterRuleSets).length);
+  assert.equal(wwuidMeta.characterDirectories, new Set(Object.values(characterRuleSets).map(rule => rule.characterName)).size);
+  const uniqueRules = new Map(Object.values(characterRuleSets).map(rule => [rule.characterName, rule]));
+  assert.equal(wwuidMeta.templates, [...uniqueRules.values()].reduce((sum, rule) => sum + Object.keys(rule.templates).length, 0));
   for (const ruleSet of Object.values(characterRuleSets)) {
     assert.ok(ruleSet.templates[ruleSet.defaultTemplate]);
   }
@@ -93,6 +96,14 @@ test('compares score, weapon and replaced echoes with the previous build', () =>
   assert.equal(difference.echoes.length, 1);
   assert.equal(difference.echoes[0].before.id, '1');
   assert.ok(difference.delta > 0);
+});
+
+test('rejects scoring updates without the local action header', async () => {
+  await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
+  const { port } = server.address();
+  const response = await fetch(`http://127.0.0.1:${port}/api/scoring-update`, { method: 'POST' });
+  assert.equal(response.status, 403);
+  await new Promise(resolve => server.close(resolve));
 });
 
 test('normalizes macOS OCR output into a scored echo shape', () => {

@@ -28,6 +28,7 @@ nav .active { border-color: rgba(215,189,120,.22); color: var(--gold); backgroun
 .source p { margin: 0; }
 .source button { border: 0; padding: 0; color: #656f77; background: none; font-size: 8px; text-align: left; cursor: pointer; }
 .source button:hover { color: var(--gold); }
+.source button:disabled { cursor: wait; opacity: .6; }
 main { min-width: 0; height: 100vh; display: grid; grid-template-columns: clamp(340px, 31vw, 480px) minmax(0, 1fr); overflow: hidden; }
 .controls { min-width: 0; display: flex; flex-direction: column; gap: 15px; padding: clamp(24px, 4vh, 44px) clamp(24px, 3vw, 46px) 22px; border-right: 1px solid var(--line); background: rgba(9,12,16,.72); }
 header { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; }
