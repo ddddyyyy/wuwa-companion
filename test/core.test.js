@@ -73,6 +73,16 @@ test('uses the current domestic Hiyuki scoring configuration', () => {
   assert.equal(selected.rule.attribute, 'Glacio');
 });
 
+test('includes current XutheringWavesUID roles and five-piece templates', () => {
+  for (const id of ['1109', '1110', '1211', '1212', '1308', '1309', '1310', '1413', '1511', '1610']) {
+    assert.ok(characterRuleSets[id], `missing character rule ${id}`);
+  }
+  const selected = selectCharacterRule({ characterId: '1109', weaponId: 'w', sequence: 0,
+    echoes: Array.from({ length: 5 }, (_, id) => ({ id, setId: 33 })) });
+  assert.equal(selected.templateName, '洛瑟菈-霜渐-羽落');
+  assert.match(wwuidMeta.resourceCommit, /^[a-f0-9]{40}$/);
+});
+
 test('extracts raw and XOR-obfuscated convene links', () => {
   const url = 'https://aki-gm-resources-oversea.aki-game.net/aki/gacha/index.html#/record?player_id=700000001&record_id=token';
   const encoded = Buffer.from(url, 'utf8').map(value => {

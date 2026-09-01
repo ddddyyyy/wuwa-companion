@@ -84,15 +84,15 @@ export async function loadLatestBuilds(input) {
 
 export async function checkScoringUpdate(force = false) {
   if (!force && scoringUpdateCache && Date.now() - scoringUpdateCache.time < 3_600_000) return scoringUpdateCache.data;
-  const response = await fetch('https://api.github.com/repos/raared/WWUID/commits/master', {
+  const response = await fetch('https://api.github.com/repos/Loping151/XutheringWavesUID/commits/HEAD', {
     headers: { accept: 'application/vnd.github+json', 'user-agent': 'wuwa-companion' }, redirect: 'manual', signal: AbortSignal.timeout(10_000)
   });
   if (!response.ok) throw new Error(`评分配置检查失败（HTTP ${response.status}）`);
   const value = await response.json();
-  if (!/^[a-f0-9]{40}$/.test(value?.sha) || !/^https:\/\/github\.com\/raared\/WWUID\/commit\/[a-f0-9]{40}$/.test(value?.html_url)) {
-    throw new Error('WWUID 版本信息格式已变化');
+  if (!/^[a-f0-9]{40}$/.test(value?.sha) || !/^https:\/\/github\.com\/Loping151\/XutheringWavesUID\/commit\/[a-f0-9]{40}$/.test(value?.html_url)) {
+    throw new Error('XutheringWavesUID 版本信息格式已变化');
   }
-  const current = JSON.parse(await readFile(join(root, 'wwuid-sync-report.json'), 'utf8')).commit;
+  const current = JSON.parse(await readFile(join(root, 'wwuid-sync-report.json'), 'utf8')).resourceCommit;
   const data = { current, latest: value.sha, available: value.sha !== current, url: value.html_url };
   scoringUpdateCache = { time: Date.now(), data };
   return data;
@@ -106,8 +106,8 @@ export async function updateScoringRules() {
     const files = ['character-rules.js', 'echo-data.js', 'wwuid-sync-report.json', 'LICENSE'];
     const backups = await Promise.all(files.map(file => readFile(join(root, file))));
     try {
-      await runFile(process.execPath, [join(root, 'scripts/sync-wwuid.js'), '--commit', update.latest], { timeout: 120_000 });
-      const installed = JSON.parse(await readFile(join(root, 'wwuid-sync-report.json'), 'utf8')).commit;
+      await runFile(process.execPath, [join(root, 'scripts/sync-wwuid.js'), '--resource-commit', update.latest], { timeout: 180_000 });
+      const installed = JSON.parse(await readFile(join(root, 'wwuid-sync-report.json'), 'utf8')).resourceCommit;
       if (installed !== update.latest) throw new Error('同步后的版本与目标版本不一致');
       const result = { ...update, current: installed, available: false, updated: true };
       scoringUpdateCache = { time: Date.now(), data: result };

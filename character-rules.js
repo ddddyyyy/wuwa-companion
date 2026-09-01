@@ -2,12 +2,78 @@
 export const wwuidMeta = {
   "repository": "https://github.com/raared/WWUID.git",
   "commit": "1d0ed3b7bc640cdf05b9320e5d514227549bf0c2",
+  "scoringRepository": "https://github.com/Loping151/XutheringWavesUID",
+  "resourceCommit": "d3e750ae4d4f7fd7f33358da9637c9b5d07ccb63",
   "currentResource": "https://ww1.loping151.top/XutheringWavesUID/resource/map/character",
   "license": "GPL-3.0-only",
-  "characterDirectories": 49,
-  "characterIds": 52,
-  "templates": 50,
-  "conditions": 2,
+  "characterDirectories": 58,
+  "characterIds": 62,
+  "templates": 62,
+  "conditions": 5,
+  "resourceCharacterIds": [
+    "1102",
+    "1103",
+    "1104",
+    "1105",
+    "1106",
+    "1107",
+    "1108",
+    "1109",
+    "1110",
+    "1202",
+    "1203",
+    "1204",
+    "1205",
+    "1206",
+    "1207",
+    "1208",
+    "1209",
+    "1210",
+    "1211",
+    "1212",
+    "1301",
+    "1302",
+    "1303",
+    "1304",
+    "1305",
+    "1306",
+    "1307",
+    "1308",
+    "1309",
+    "1310",
+    "1402",
+    "1403",
+    "1404",
+    "1405",
+    "1406",
+    "1407",
+    "1408",
+    "1409",
+    "1410",
+    "1411",
+    "1412",
+    "1413",
+    "1501",
+    "1502",
+    "1503",
+    "1504",
+    "1505",
+    "1506",
+    "1507",
+    "1508",
+    "1509",
+    "1510",
+    "1511",
+    "1601",
+    "1602",
+    "1603",
+    "1604",
+    "1605",
+    "1606",
+    "1607",
+    "1608",
+    "1610"
+  ],
   "unmapped": []
 };
 
@@ -624,6 +690,480 @@ export const characterRuleSets = {
           "1": 82.669,
           "3": 81.57,
           "4": 83.628
+        },
+        "thresholdsByCost": {
+          "1": [
+            0,
+            0.48,
+            0.6,
+            0.7,
+            0.78,
+            0.84
+          ],
+          "3": [
+            0,
+            0.48,
+            0.6,
+            0.7,
+            0.78,
+            0.84
+          ],
+          "4": [
+            0,
+            0.48,
+            0.6,
+            0.7,
+            0.78,
+            0.84
+          ]
+        },
+        "totalThresholds": [
+          0,
+          0.48,
+          0.6,
+          0.7,
+          0.78,
+          0.84
+        ]
+      }
+    },
+    "conditions": []
+  },
+  "1109": {
+    "characterName": "洛瑟菈",
+    "attribute": "Glacio",
+    "defaultTemplate": "calc.json",
+    "templates": {
+      "calc-featherfall.json": {
+        "name": "洛瑟菈-霜渐-羽落",
+        "mainWeights": {
+          "1": {
+            "ATK%": 0.6,
+            "HP": 0,
+            "HP%": 0,
+            "DEF%": 0
+          },
+          "3": {
+            "ATK": 0.025,
+            "ATK%": 0.3,
+            "HP%": 0,
+            "DEF%": 0,
+            "Energy Regen": 0,
+            "AttributeDMG": 0.3
+          },
+          "4": {
+            "ATK": 0.025,
+            "ATK%": 0.275,
+            "HP%": 0,
+            "DEF%": 0,
+            "Crit Rate": 0.5,
+            "Crit DMG": 0.25,
+            "Healing Bonus": 0
+          }
+        },
+        "subWeights": {
+          "ATK": 0.11,
+          "ATK%": 1.2,
+          "HP": 0,
+          "HP%": 0,
+          "DEF": 0,
+          "DEF%": 0,
+          "Crit Rate": 2,
+          "Crit DMG": 1,
+          "SkillDMG": 0.9,
+          "Energy Regen": 0.3
+        },
+        "skillWeights": {
+          "Basic Attack DMG Bonus": 1,
+          "Heavy Attack DMG Bonus": 0,
+          "Resonance Skill DMG Bonus": 0,
+          "Resonance Liberation DMG Bonus": 0
+        },
+        "maxScoreByCost": {
+          "1": 83.758,
+          "3": 84.46,
+          "4": 87.71
+        },
+        "thresholdsByCost": {
+          "1": [
+            0,
+            0.48,
+            0.6,
+            0.7,
+            0.78,
+            0.84
+          ],
+          "3": [
+            0,
+            0.48,
+            0.6,
+            0.7,
+            0.78,
+            0.84
+          ],
+          "4": [
+            0,
+            0.48,
+            0.6,
+            0.7,
+            0.78,
+            0.84
+          ]
+        },
+        "totalThresholds": [
+          0,
+          0.48,
+          0.6,
+          0.7,
+          0.78,
+          0.84
+        ]
+      },
+      "calc-phantom-featherfall.json": {
+        "name": "洛瑟菈-声骸-羽落",
+        "mainWeights": {
+          "1": {
+            "ATK%": 0.6,
+            "HP": 0,
+            "HP%": 0,
+            "DEF%": 0
+          },
+          "3": {
+            "ATK": 0.025,
+            "ATK%": 0.3,
+            "HP%": 0,
+            "DEF%": 0,
+            "Energy Regen": 0,
+            "AttributeDMG": 0.3
+          },
+          "4": {
+            "ATK": 0.025,
+            "ATK%": 0.275,
+            "HP%": 0,
+            "DEF%": 0,
+            "Crit Rate": 0.4,
+            "Crit DMG": 0.24,
+            "Healing Bonus": 0
+          }
+        },
+        "subWeights": {
+          "ATK": 0.12,
+          "ATK%": 1.3,
+          "HP": 0,
+          "HP%": 0,
+          "DEF": 0,
+          "DEF%": 0,
+          "Crit Rate": 1.8,
+          "Crit DMG": 1,
+          "SkillDMG": 0.8,
+          "Energy Regen": 0.3
+        },
+        "skillWeights": {
+          "Basic Attack DMG Bonus": 0.25,
+          "Heavy Attack DMG Bonus": 0,
+          "Resonance Skill DMG Bonus": 0.15,
+          "Resonance Liberation DMG Bonus": 0
+        },
+        "maxScoreByCost": {
+          "1": 75.299,
+          "3": 76,
+          "4": 78.809
+        },
+        "thresholdsByCost": {
+          "1": [
+            0,
+            0.48,
+            0.6,
+            0.7,
+            0.78,
+            0.84
+          ],
+          "3": [
+            0,
+            0.48,
+            0.6,
+            0.7,
+            0.78,
+            0.84
+          ],
+          "4": [
+            0,
+            0.48,
+            0.6,
+            0.7,
+            0.78,
+            0.84
+          ]
+        },
+        "totalThresholds": [
+          0,
+          0.48,
+          0.6,
+          0.7,
+          0.78,
+          0.84
+        ]
+      },
+      "calc-phantom.json": {
+        "name": "洛瑟菈-声骸",
+        "mainWeights": {
+          "1": {
+            "ATK%": 0.6,
+            "HP": 0,
+            "HP%": 0,
+            "DEF%": 0
+          },
+          "3": {
+            "ATK": 0.025,
+            "ATK%": 0.3,
+            "HP%": 0,
+            "DEF%": 0,
+            "Energy Regen": 0,
+            "AttributeDMG": 0.3
+          },
+          "4": {
+            "ATK": 0.025,
+            "ATK%": 0.275,
+            "HP%": 0,
+            "DEF%": 0,
+            "Crit Rate": 0.4,
+            "Crit DMG": 0.24,
+            "Healing Bonus": 0
+          }
+        },
+        "subWeights": {
+          "ATK": 0.12,
+          "ATK%": 1.3,
+          "HP": 0,
+          "HP%": 0,
+          "DEF": 0,
+          "DEF%": 0,
+          "Crit Rate": 1.8,
+          "Crit DMG": 1,
+          "SkillDMG": 0.8,
+          "Energy Regen": 0
+        },
+        "skillWeights": {
+          "Basic Attack DMG Bonus": 0.25,
+          "Heavy Attack DMG Bonus": 0,
+          "Resonance Skill DMG Bonus": 0.15,
+          "Resonance Liberation DMG Bonus": 0
+        },
+        "maxScoreByCost": {
+          "1": 75.299,
+          "3": 76,
+          "4": 78.809
+        },
+        "thresholdsByCost": {
+          "1": [
+            0,
+            0.48,
+            0.6,
+            0.7,
+            0.78,
+            0.84
+          ],
+          "3": [
+            0,
+            0.48,
+            0.6,
+            0.7,
+            0.78,
+            0.84
+          ],
+          "4": [
+            0,
+            0.48,
+            0.6,
+            0.7,
+            0.78,
+            0.84
+          ]
+        },
+        "totalThresholds": [
+          0,
+          0.48,
+          0.6,
+          0.7,
+          0.78,
+          0.84
+        ]
+      },
+      "calc.json": {
+        "name": "洛瑟菈-霜渐",
+        "mainWeights": {
+          "1": {
+            "ATK%": 0.6,
+            "HP": 0,
+            "HP%": 0,
+            "DEF%": 0
+          },
+          "3": {
+            "ATK": 0.025,
+            "ATK%": 0.3,
+            "HP%": 0,
+            "DEF%": 0,
+            "Energy Regen": 0,
+            "AttributeDMG": 0.3
+          },
+          "4": {
+            "ATK": 0.025,
+            "ATK%": 0.275,
+            "HP%": 0,
+            "DEF%": 0,
+            "Crit Rate": 0.5,
+            "Crit DMG": 0.25,
+            "Healing Bonus": 0
+          }
+        },
+        "subWeights": {
+          "ATK": 0.11,
+          "ATK%": 1.2,
+          "HP": 0,
+          "HP%": 0,
+          "DEF": 0,
+          "DEF%": 0,
+          "Crit Rate": 2,
+          "Crit DMG": 1,
+          "SkillDMG": 0.9,
+          "Energy Regen": 0
+        },
+        "skillWeights": {
+          "Basic Attack DMG Bonus": 1,
+          "Heavy Attack DMG Bonus": 0,
+          "Resonance Skill DMG Bonus": 0,
+          "Resonance Liberation DMG Bonus": 0
+        },
+        "maxScoreByCost": {
+          "1": 83.758,
+          "3": 84.46,
+          "4": 87.71
+        },
+        "thresholdsByCost": {
+          "1": [
+            0,
+            0.48,
+            0.6,
+            0.7,
+            0.78,
+            0.84
+          ],
+          "3": [
+            0,
+            0.48,
+            0.6,
+            0.7,
+            0.78,
+            0.84
+          ],
+          "4": [
+            0,
+            0.48,
+            0.6,
+            0.7,
+            0.78,
+            0.84
+          ]
+        },
+        "totalThresholds": [
+          0,
+          0.48,
+          0.6,
+          0.7,
+          0.78,
+          0.84
+        ]
+      }
+    },
+    "conditions": [
+      {
+        "op": "&&",
+        "sub": [
+          {
+            "key": "sonata_5",
+            "op": "in",
+            "value": [
+              "羽落空尘之歌"
+            ]
+          },
+          {
+            "key": "modal",
+            "op": "=",
+            "value": "phantom"
+          }
+        ],
+        "choose": "calc-phantom-featherfall.json"
+      },
+      {
+        "key": "sonata_5",
+        "op": "in",
+        "value": [
+          "羽落空尘之歌"
+        ],
+        "choose": "calc-featherfall.json"
+      },
+      {
+        "choose": "calc-phantom.json",
+        "key": "modal",
+        "op": "=",
+        "value": "phantom"
+      }
+    ]
+  },
+  "1110": {
+    "characterName": "穗穗",
+    "attribute": "Glacio",
+    "defaultTemplate": "calc.json",
+    "templates": {
+      "calc.json": {
+        "name": "穗穗-通用",
+        "mainWeights": {
+          "1": {
+            "ATK%": 0,
+            "HP": 0.0027,
+            "HP%": 0.4,
+            "DEF%": 0
+          },
+          "3": {
+            "ATK": 0,
+            "ATK%": 0,
+            "HP%": 0.3,
+            "DEF%": 0,
+            "Energy Regen": 0.3,
+            "AttributeDMG": 0.28
+          },
+          "4": {
+            "ATK": 0,
+            "ATK%": 0,
+            "HP%": 0.35,
+            "DEF%": 0,
+            "Crit Rate": 0,
+            "Crit DMG": 0.2,
+            "Healing Bonus": 0.47
+          }
+        },
+        "subWeights": {
+          "ATK": 0,
+          "ATK%": 0,
+          "HP": 0.01,
+          "HP%": 1.2,
+          "DEF": 0,
+          "DEF%": 0,
+          "Crit Rate": 0.1,
+          "Crit DMG": 0.33,
+          "SkillDMG": 0.4,
+          "Energy Regen": 1
+        },
+        "skillWeights": {
+          "Basic Attack DMG Bonus": 0,
+          "Heavy Attack DMG Bonus": 0,
+          "Resonance Skill DMG Bonus": 0.3,
+          "Resonance Liberation DMG Bonus": 0
+        },
+        "maxScoreByCost": {
+          "1": 55.718,
+          "3": 50.042,
+          "4": 51.991
         },
         "thresholdsByCost": {
           "1": [
@@ -1326,24 +1866,24 @@ export const characterRuleSets = {
             "ATK%": 0,
             "HP": 0,
             "HP%": 0,
-            "DEF%": 0.77784
+            "DEF%": 0.6
           },
           "3": {
             "ATK": 0,
             "ATK%": 0,
             "HP%": 0,
-            "DEF%": 0.2632,
-            "Energy Regen": 0.3125,
-            "AttributeDMG": 0.333
+            "DEF%": 0.26,
+            "Energy Regen": 0.35,
+            "AttributeDMG": 0.25
           },
           "4": {
             "ATK": 0,
             "ATK%": 0,
             "HP%": 0,
-            "DEF%": 0.16751,
+            "DEF%": 0.3,
             "Crit Rate": 0,
-            "Crit DMG": 0.15911,
-            "Healing Bonus": 0.26523
+            "Crit DMG": 0.2,
+            "Healing Bonus": 0.44
           }
         },
         "subWeights": {
@@ -1351,23 +1891,23 @@ export const characterRuleSets = {
           "ATK%": 0,
           "HP": 0,
           "HP%": 0,
-          "DEF": 0.1428,
-          "DEF%": 1.3606,
-          "Crit Rate": 0.952,
-          "Crit DMG": 0.6201,
-          "SkillDMG": 0.8621,
-          "Energy Regen": 1.613
+          "DEF": 0.1,
+          "DEF%": 1.25,
+          "Crit Rate": 0.1,
+          "Crit DMG": 0.3,
+          "SkillDMG": 1.1,
+          "Energy Regen": 1.3
         },
         "skillWeights": {
           "Basic Attack DMG Bonus": 0,
           "Heavy Attack DMG Bonus": 0,
           "Resonance Skill DMG Bonus": 0,
-          "Resonance Liberation DMG Bonus": 0.6
+          "Resonance Liberation DMG Bonus": 0.4
         },
         "maxScoreByCost": {
-          "1": 83.021,
-          "3": 79.02,
-          "4": 76.021
+          "1": 63.698,
+          "3": 64.099,
+          "4": 64.515
         },
         "thresholdsByCost": {
           "1": [
@@ -1440,7 +1980,7 @@ export const characterRuleSets = {
           }
         },
         "subWeights": {
-          "ATK": 0.1,
+          "ATK": 0.12,
           "ATK%": 1.1,
           "HP": 0,
           "HP%": 0,
@@ -1448,8 +1988,8 @@ export const characterRuleSets = {
           "DEF%": 0,
           "Crit Rate": 2,
           "Crit DMG": 1,
-          "SkillDMG": 1.3,
-          "Energy Regen": 0.3
+          "SkillDMG": 1.1,
+          "Energy Regen": 0.2
         },
         "skillWeights": {
           "Basic Attack DMG Bonus": 0,
@@ -1458,9 +1998,195 @@ export const characterRuleSets = {
           "Resonance Liberation DMG Bonus": 0.7
         },
         "maxScoreByCost": {
-          "1": 78.516,
-          "3": 82.066,
-          "4": 86.066
+          "1": 78.092,
+          "3": 81.642,
+          "4": 85.642
+        },
+        "thresholdsByCost": {
+          "1": [
+            0,
+            0.48,
+            0.6,
+            0.7,
+            0.78,
+            0.84
+          ],
+          "3": [
+            0,
+            0.48,
+            0.6,
+            0.7,
+            0.78,
+            0.84
+          ],
+          "4": [
+            0,
+            0.48,
+            0.6,
+            0.7,
+            0.78,
+            0.84
+          ]
+        },
+        "totalThresholds": [
+          0,
+          0.48,
+          0.6,
+          0.7,
+          0.78,
+          0.84
+        ]
+      }
+    },
+    "conditions": []
+  },
+  "1211": {
+    "characterName": "达妮娅",
+    "attribute": "Fusion",
+    "defaultTemplate": "calc.json",
+    "templates": {
+      "calc.json": {
+        "name": "达妮娅-通用",
+        "mainWeights": {
+          "1": {
+            "ATK%": 0.7,
+            "HP": 0,
+            "HP%": 0,
+            "DEF%": 0
+          },
+          "3": {
+            "ATK": 0.025,
+            "ATK%": 0.3,
+            "HP%": 0,
+            "DEF%": 0,
+            "Energy Regen": 0,
+            "AttributeDMG": 0.3
+          },
+          "4": {
+            "ATK": 0.02,
+            "ATK%": 0.32,
+            "HP%": 0,
+            "DEF%": 0,
+            "Crit Rate": 0.48,
+            "Crit DMG": 0.24,
+            "Healing Bonus": 0
+          }
+        },
+        "subWeights": {
+          "ATK": 0.11,
+          "ATK%": 1.2,
+          "HP": 0,
+          "HP%": 0,
+          "DEF": 0,
+          "DEF%": 0,
+          "Crit Rate": 2,
+          "Crit DMG": 1,
+          "SkillDMG": 0.85,
+          "Energy Regen": 0.2
+        },
+        "skillWeights": {
+          "Basic Attack DMG Bonus": 0,
+          "Heavy Attack DMG Bonus": 0,
+          "Resonance Skill DMG Bonus": 0,
+          "Resonance Liberation DMG Bonus": 1
+        },
+        "maxScoreByCost": {
+          "1": 84.979,
+          "3": 83.88,
+          "4": 85.939
+        },
+        "thresholdsByCost": {
+          "1": [
+            0,
+            0.48,
+            0.6,
+            0.7,
+            0.78,
+            0.84
+          ],
+          "3": [
+            0,
+            0.48,
+            0.6,
+            0.7,
+            0.78,
+            0.84
+          ],
+          "4": [
+            0,
+            0.48,
+            0.6,
+            0.7,
+            0.78,
+            0.84
+          ]
+        },
+        "totalThresholds": [
+          0,
+          0.48,
+          0.6,
+          0.7,
+          0.78,
+          0.84
+        ]
+      }
+    },
+    "conditions": []
+  },
+  "1212": {
+    "characterName": "景燃",
+    "attribute": "Fusion",
+    "defaultTemplate": "calc.json",
+    "templates": {
+      "calc.json": {
+        "name": "景燃-通用",
+        "mainWeights": {
+          "1": {
+            "ATK%": 0.5,
+            "HP": 0.0015,
+            "HP%": 0.395,
+            "DEF%": 0
+          },
+          "3": {
+            "ATK": 0.025,
+            "ATK%": 0.15,
+            "HP%": 0.3,
+            "DEF%": 0,
+            "Energy Regen": 0,
+            "AttributeDMG": 0.3
+          },
+          "4": {
+            "ATK": 0.02,
+            "ATK%": 0.15,
+            "HP%": 0.12,
+            "DEF%": 0,
+            "Crit Rate": 0.5,
+            "Crit DMG": 0.25,
+            "Healing Bonus": 0
+          }
+        },
+        "subWeights": {
+          "ATK": 0.05,
+          "ATK%": 0.35,
+          "HP": 0.0065,
+          "HP%": 1,
+          "DEF": 0,
+          "DEF%": 0,
+          "Crit Rate": 2,
+          "Crit DMG": 1,
+          "SkillDMG": 1.2,
+          "Energy Regen": 0.3
+        },
+        "skillWeights": {
+          "Basic Attack DMG Bonus": 0,
+          "Heavy Attack DMG Bonus": 0.8,
+          "Resonance Skill DMG Bonus": 0,
+          "Resonance Liberation DMG Bonus": 0
+        },
+        "maxScoreByCost": {
+          "1": 81.222,
+          "3": 80.296,
+          "4": 82.796
         },
         "thresholdsByCost": {
           "1": [
@@ -2112,6 +2838,285 @@ export const characterRuleSets = {
           "1": 45.72,
           "3": 51.159,
           "4": 53.324
+        },
+        "thresholdsByCost": {
+          "1": [
+            0,
+            0.48,
+            0.6,
+            0.7,
+            0.78,
+            0.84
+          ],
+          "3": [
+            0,
+            0.48,
+            0.6,
+            0.7,
+            0.78,
+            0.84
+          ],
+          "4": [
+            0,
+            0.48,
+            0.6,
+            0.7,
+            0.78,
+            0.84
+          ]
+        },
+        "totalThresholds": [
+          0,
+          0.48,
+          0.6,
+          0.7,
+          0.78,
+          0.84
+        ]
+      }
+    },
+    "conditions": []
+  },
+  "1308": {
+    "characterName": "丽贝卡",
+    "attribute": "Electro",
+    "defaultTemplate": "calc.json",
+    "templates": {
+      "calc.json": {
+        "name": "丽贝卡-通用",
+        "mainWeights": {
+          "1": {
+            "ATK%": 0.6,
+            "HP": 0,
+            "HP%": 0,
+            "DEF%": 0
+          },
+          "3": {
+            "ATK": 0.025,
+            "ATK%": 0.3,
+            "HP%": 0,
+            "DEF%": 0,
+            "Energy Regen": 0,
+            "AttributeDMG": 0.3
+          },
+          "4": {
+            "ATK": 0.02,
+            "ATK%": 0.32,
+            "HP%": 0,
+            "DEF%": 0,
+            "Crit Rate": 0.48,
+            "Crit DMG": 0.24,
+            "Healing Bonus": 0
+          }
+        },
+        "subWeights": {
+          "ATK": 0.11,
+          "ATK%": 1.2,
+          "HP": 0,
+          "HP%": 0,
+          "DEF": 0,
+          "DEF%": 0,
+          "Crit Rate": 2,
+          "Crit DMG": 1,
+          "SkillDMG": 0.9,
+          "Energy Regen": 0.25
+        },
+        "skillWeights": {
+          "Basic Attack DMG Bonus": 1,
+          "Heavy Attack DMG Bonus": 0,
+          "Resonance Skill DMG Bonus": 0,
+          "Resonance Liberation DMG Bonus": 0
+        },
+        "maxScoreByCost": {
+          "1": 83.758,
+          "3": 84.46,
+          "4": 86.518
+        },
+        "thresholdsByCost": {
+          "1": [
+            0,
+            0.48,
+            0.6,
+            0.7,
+            0.78,
+            0.84
+          ],
+          "3": [
+            0,
+            0.48,
+            0.6,
+            0.7,
+            0.78,
+            0.84
+          ],
+          "4": [
+            0,
+            0.48,
+            0.6,
+            0.7,
+            0.78,
+            0.84
+          ]
+        },
+        "totalThresholds": [
+          0,
+          0.48,
+          0.6,
+          0.7,
+          0.78,
+          0.84
+        ]
+      }
+    },
+    "conditions": []
+  },
+  "1309": {
+    "characterName": "漂泊者·导电",
+    "attribute": "Electro",
+    "defaultTemplate": "calc.json",
+    "templates": {
+      "calc.json": {
+        "name": "雷主-通用",
+        "mainWeights": {
+          "1": {
+            "ATK%": 0.4,
+            "HP": 0,
+            "HP%": 0,
+            "DEF%": 0
+          },
+          "3": {
+            "ATK": 0.025,
+            "ATK%": 0.275,
+            "HP%": 0,
+            "DEF%": 0,
+            "Energy Regen": 0,
+            "AttributeDMG": 0.275
+          },
+          "4": {
+            "ATK": 0.025,
+            "ATK%": 0.275,
+            "HP%": 0,
+            "DEF%": 0,
+            "Crit Rate": 0.5,
+            "Crit DMG": 0.25,
+            "Healing Bonus": 0
+          }
+        },
+        "subWeights": {
+          "ATK": 0.1,
+          "ATK%": 1.1,
+          "HP": 0,
+          "HP%": 0,
+          "DEF": 0,
+          "DEF%": 0,
+          "Crit Rate": 2,
+          "Crit DMG": 1,
+          "SkillDMG": 1.2,
+          "Energy Regen": 0.2
+        },
+        "skillWeights": {
+          "Basic Attack DMG Bonus": 0.12,
+          "Heavy Attack DMG Bonus": 0,
+          "Resonance Skill DMG Bonus": 0.55,
+          "Resonance Liberation DMG Bonus": 0.33
+        },
+        "maxScoreByCost": {
+          "1": 75.616,
+          "3": 79.166,
+          "4": 83.166
+        },
+        "thresholdsByCost": {
+          "1": [
+            0,
+            0.48,
+            0.6,
+            0.7,
+            0.78,
+            0.84
+          ],
+          "3": [
+            0,
+            0.48,
+            0.6,
+            0.7,
+            0.78,
+            0.84
+          ],
+          "4": [
+            0,
+            0.48,
+            0.6,
+            0.7,
+            0.78,
+            0.84
+          ]
+        },
+        "totalThresholds": [
+          0,
+          0.48,
+          0.6,
+          0.7,
+          0.78,
+          0.84
+        ]
+      }
+    },
+    "conditions": []
+  },
+  "1310": {
+    "characterName": "漂泊者·导电",
+    "attribute": "Electro",
+    "defaultTemplate": "calc.json",
+    "templates": {
+      "calc.json": {
+        "name": "雷主-通用",
+        "mainWeights": {
+          "1": {
+            "ATK%": 0.4,
+            "HP": 0,
+            "HP%": 0,
+            "DEF%": 0
+          },
+          "3": {
+            "ATK": 0.025,
+            "ATK%": 0.275,
+            "HP%": 0,
+            "DEF%": 0,
+            "Energy Regen": 0,
+            "AttributeDMG": 0.275
+          },
+          "4": {
+            "ATK": 0.025,
+            "ATK%": 0.275,
+            "HP%": 0,
+            "DEF%": 0,
+            "Crit Rate": 0.5,
+            "Crit DMG": 0.25,
+            "Healing Bonus": 0
+          }
+        },
+        "subWeights": {
+          "ATK": 0.1,
+          "ATK%": 1.1,
+          "HP": 0,
+          "HP%": 0,
+          "DEF": 0,
+          "DEF%": 0,
+          "Crit Rate": 2,
+          "Crit DMG": 1,
+          "SkillDMG": 1.2,
+          "Energy Regen": 0.2
+        },
+        "skillWeights": {
+          "Basic Attack DMG Bonus": 0.12,
+          "Heavy Attack DMG Bonus": 0,
+          "Resonance Skill DMG Bonus": 0.55,
+          "Resonance Liberation DMG Bonus": 0.33
+        },
+        "maxScoreByCost": {
+          "1": 75.616,
+          "3": 79.166,
+          "4": 83.166
         },
         "thresholdsByCost": {
           "1": [
@@ -2922,7 +3927,7 @@ export const characterRuleSets = {
             "ATK%": 0.275,
             "HP%": 0,
             "DEF%": 0,
-            "Crit Rate": 0.5,
+            "Crit Rate": 0.33,
             "Crit DMG": 0.25,
             "Healing Bonus": 0
           }
@@ -3090,32 +4095,32 @@ export const characterRuleSets = {
         "name": "西格莉卡-通用",
         "mainWeights": {
           "1": {
-            "ATK%": 0.3,
+            "ATK%": 0.5,
             "HP": 0,
             "HP%": 0,
             "DEF%": 0
           },
           "3": {
-            "ATK": 0.021,
-            "ATK%": 0.21,
+            "ATK": 0.025,
+            "ATK%": 0.275,
             "HP%": 0,
             "DEF%": 0,
-            "Energy Regen": 0.15,
-            "AttributeDMG": 0.21
+            "Energy Regen": 0.225,
+            "AttributeDMG": 0.275
           },
           "4": {
-            "ATK": 0.013,
-            "ATK%": 0.13,
+            "ATK": 0.025,
+            "ATK%": 0.25,
             "HP%": 0,
             "DEF%": 0,
-            "Crit Rate": 0.5,
-            "Crit DMG": 0.25,
+            "Crit Rate": 0.4,
+            "Crit DMG": 0.2,
             "Healing Bonus": 0
           }
         },
         "subWeights": {
           "ATK": 0.1,
-          "ATK%": 1,
+          "ATK%": 1.1,
           "HP": 0,
           "HP%": 0,
           "DEF": 0,
@@ -3123,7 +4128,7 @@ export const characterRuleSets = {
           "Crit Rate": 2,
           "Crit DMG": 1,
           "SkillDMG": 0,
-          "Energy Regen": 0.9
+          "Energy Regen": 0.8
         },
         "skillWeights": {
           "Basic Attack DMG Bonus": 0,
@@ -3132,9 +4137,102 @@ export const characterRuleSets = {
           "Resonance Liberation DMG Bonus": 0
         },
         "maxScoreByCost": {
-          "1": 76.159,
-          "3": 79.16,
-          "4": 83.71
+          "1": 79.68,
+          "3": 81.43,
+          "4": 83.23
+        },
+        "thresholdsByCost": {
+          "1": [
+            0,
+            0.48,
+            0.6,
+            0.7,
+            0.78,
+            0.84
+          ],
+          "3": [
+            0,
+            0.48,
+            0.6,
+            0.7,
+            0.78,
+            0.84
+          ],
+          "4": [
+            0,
+            0.48,
+            0.6,
+            0.7,
+            0.78,
+            0.84
+          ]
+        },
+        "totalThresholds": [
+          0,
+          0.48,
+          0.6,
+          0.7,
+          0.78,
+          0.84
+        ]
+      }
+    },
+    "conditions": []
+  },
+  "1413": {
+    "characterName": "清宵",
+    "attribute": "Aero",
+    "defaultTemplate": "calc.json",
+    "templates": {
+      "calc.json": {
+        "name": "清宵-通用",
+        "mainWeights": {
+          "1": {
+            "ATK%": 0.6,
+            "HP": 0,
+            "HP%": 0,
+            "DEF%": 0
+          },
+          "3": {
+            "ATK": 0.025,
+            "ATK%": 0.3,
+            "HP%": 0,
+            "DEF%": 0,
+            "Energy Regen": 0,
+            "AttributeDMG": 0.3
+          },
+          "4": {
+            "ATK": 0.025,
+            "ATK%": 0.275,
+            "HP%": 0,
+            "DEF%": 0,
+            "Crit Rate": 0.4,
+            "Crit DMG": 0.25,
+            "Healing Bonus": 0
+          }
+        },
+        "subWeights": {
+          "ATK": 0.13,
+          "ATK%": 1.25,
+          "HP": 0,
+          "HP%": 0,
+          "DEF": 0,
+          "DEF%": 0,
+          "Crit Rate": 2,
+          "Crit DMG": 1,
+          "SkillDMG": 1.1,
+          "Energy Regen": 0.2
+        },
+        "skillWeights": {
+          "Basic Attack DMG Bonus": 0.4,
+          "Heavy Attack DMG Bonus": 0.65,
+          "Resonance Skill DMG Bonus": 0,
+          "Resonance Liberation DMG Bonus": 0.55
+        },
+        "maxScoreByCost": {
+          "1": 83.393,
+          "3": 84.094,
+          "4": 87.344
         },
         "thresholdsByCost": {
           "1": [
@@ -3557,25 +4655,25 @@ export const characterRuleSets = {
           "1": {
             "ATK%": 0,
             "HP": 0.003,
-            "HP%": 0.42,
+            "HP%": 0.4,
             "DEF%": 0
           },
           "3": {
             "ATK": 0,
             "ATK%": 0,
-            "HP%": 0.3334,
+            "HP%": 0.3,
             "DEF%": 0,
-            "Energy Regen": 0.3125,
-            "AttributeDMG": 0.3334
+            "Energy Regen": 0.3,
+            "AttributeDMG": 0.28
           },
           "4": {
             "ATK": 0,
             "ATK%": 0,
-            "HP%": 0.304,
+            "HP%": 0.35,
             "DEF%": 0,
             "Crit Rate": 0,
-            "Crit DMG": 0.228,
-            "Healing Bonus": 0.38
+            "Crit DMG": 0.2,
+            "Healing Bonus": 0.47
           }
         },
         "subWeights": {
@@ -3597,9 +4695,9 @@ export const characterRuleSets = {
           "Resonance Liberation DMG Bonus": 0.35
         },
         "maxScoreByCost": {
-          "1": 66.972,
-          "3": 60.556,
-          "4": 60.587
+          "1": 66.515,
+          "3": 60.156,
+          "4": 62.964
         },
         "thresholdsByCost": {
           "1": [
@@ -3929,7 +5027,7 @@ export const characterRuleSets = {
     "defaultTemplate": "calc.json",
     "templates": {
       "calc.json": {
-        "name": "千咲-xw版",
+        "name": "千咲-通用",
         "mainWeights": {
           "1": {
             "ATK%": 0.4,
@@ -4050,7 +5148,7 @@ export const characterRuleSets = {
         },
         "subWeights": {
           "ATK": 0.1,
-          "ATK%": 1.1,
+          "ATK%": 1.05,
           "HP": 0,
           "HP%": 0,
           "DEF": 0,
@@ -4058,18 +5156,18 @@ export const characterRuleSets = {
           "Crit Rate": 2,
           "Crit DMG": 1,
           "SkillDMG": 1.1,
-          "Energy Regen": 0.15
+          "Energy Regen": 0.2
         },
         "skillWeights": {
-          "Basic Attack DMG Bonus": 0.65,
+          "Basic Attack DMG Bonus": 0.72,
           "Heavy Attack DMG Bonus": 0,
           "Resonance Skill DMG Bonus": 0,
-          "Resonance Liberation DMG Bonus": 0.25
+          "Resonance Liberation DMG Bonus": 0.23
         },
         "maxScoreByCost": {
-          "1": 76.254,
-          "3": 79.804,
-          "4": 83.804
+          "1": 76.567,
+          "3": 80.117,
+          "4": 84.117
         },
         "thresholdsByCost": {
           "1": [
@@ -4143,26 +5241,119 @@ export const characterRuleSets = {
         },
         "subWeights": {
           "ATK": 0.1,
-          "ATK%": 1.1,
+          "ATK%": 1.15,
           "HP": 0,
           "HP%": 0,
           "DEF": 0,
           "DEF%": 0,
           "Crit Rate": 2,
           "Crit DMG": 1,
-          "SkillDMG": 1.3,
-          "Energy Regen": 0.4
+          "SkillDMG": 1.1,
+          "Energy Regen": 0.15
         },
         "skillWeights": {
-          "Basic Attack DMG Bonus": 0.7,
+          "Basic Attack DMG Bonus": 0.77,
           "Heavy Attack DMG Bonus": 0,
           "Resonance Skill DMG Bonus": 0,
           "Resonance Liberation DMG Bonus": 0
         },
         "maxScoreByCost": {
-          "1": 78.516,
-          "3": 82.066,
-          "4": 86.066
+          "1": 78.365,
+          "3": 81.915,
+          "4": 85.915
+        },
+        "thresholdsByCost": {
+          "1": [
+            0,
+            0.48,
+            0.6,
+            0.7,
+            0.78,
+            0.84
+          ],
+          "3": [
+            0,
+            0.48,
+            0.6,
+            0.7,
+            0.78,
+            0.84
+          ],
+          "4": [
+            0,
+            0.48,
+            0.6,
+            0.7,
+            0.78,
+            0.84
+          ]
+        },
+        "totalThresholds": [
+          0,
+          0.48,
+          0.6,
+          0.7,
+          0.78,
+          0.84
+        ]
+      }
+    },
+    "conditions": []
+  },
+  "1511": {
+    "characterName": "露西",
+    "attribute": "Spectro",
+    "defaultTemplate": "calc.json",
+    "templates": {
+      "calc.json": {
+        "name": "露西-通用",
+        "mainWeights": {
+          "1": {
+            "ATK%": 0.6,
+            "HP": 0,
+            "HP%": 0,
+            "DEF%": 0
+          },
+          "3": {
+            "ATK": 0.025,
+            "ATK%": 0.3,
+            "HP%": 0,
+            "DEF%": 0,
+            "Energy Regen": 0,
+            "AttributeDMG": 0.3
+          },
+          "4": {
+            "ATK": 0.02,
+            "ATK%": 0.32,
+            "HP%": 0,
+            "DEF%": 0,
+            "Crit Rate": 0.48,
+            "Crit DMG": 0.24,
+            "Healing Bonus": 0
+          }
+        },
+        "subWeights": {
+          "ATK": 0.11,
+          "ATK%": 1.2,
+          "HP": 0,
+          "HP%": 0,
+          "DEF": 0,
+          "DEF%": 0,
+          "Crit Rate": 2,
+          "Crit DMG": 1,
+          "SkillDMG": 0.9,
+          "Energy Regen": 0.2
+        },
+        "skillWeights": {
+          "Basic Attack DMG Bonus": 0,
+          "Heavy Attack DMG Bonus": 1,
+          "Resonance Skill DMG Bonus": 0,
+          "Resonance Liberation DMG Bonus": 0
+        },
+        "maxScoreByCost": {
+          "1": 83.758,
+          "3": 84.46,
+          "4": 86.518
         },
         "thresholdsByCost": {
           "1": [
@@ -4901,7 +6092,7 @@ export const characterRuleSets = {
           "Energy Regen": 0
         },
         "skillWeights": {
-          "Basic Attack DMG Bonus": 0,
+          "Basic Attack DMG Bonus": 0.05,
           "Heavy Attack DMG Bonus": 0,
           "Resonance Skill DMG Bonus": 0.67,
           "Resonance Liberation DMG Bonus": 0
@@ -4910,6 +6101,99 @@ export const characterRuleSets = {
           "1": 76.509,
           "3": 80.059,
           "4": 84.059
+        },
+        "thresholdsByCost": {
+          "1": [
+            0,
+            0.48,
+            0.6,
+            0.7,
+            0.78,
+            0.84
+          ],
+          "3": [
+            0,
+            0.48,
+            0.6,
+            0.7,
+            0.78,
+            0.84
+          ],
+          "4": [
+            0,
+            0.48,
+            0.6,
+            0.7,
+            0.78,
+            0.84
+          ]
+        },
+        "totalThresholds": [
+          0,
+          0.48,
+          0.6,
+          0.7,
+          0.78,
+          0.84
+        ]
+      }
+    },
+    "conditions": []
+  },
+  "1610": {
+    "characterName": "秧秧·玄翎",
+    "attribute": "Havoc",
+    "defaultTemplate": "calc.json",
+    "templates": {
+      "calc.json": {
+        "name": "秧秧·玄翎-通用",
+        "mainWeights": {
+          "1": {
+            "ATK%": 0.6,
+            "HP": 0,
+            "HP%": 0,
+            "DEF%": 0
+          },
+          "3": {
+            "ATK": 0.025,
+            "ATK%": 0.3,
+            "HP%": 0,
+            "DEF%": 0,
+            "Energy Regen": 0,
+            "AttributeDMG": 0.3
+          },
+          "4": {
+            "ATK": 0.025,
+            "ATK%": 0.275,
+            "HP%": 0,
+            "DEF%": 0,
+            "Crit Rate": 0.4,
+            "Crit DMG": 0.25,
+            "Healing Bonus": 0
+          }
+        },
+        "subWeights": {
+          "ATK": 0.11,
+          "ATK%": 1.2,
+          "HP": 0,
+          "HP%": 0,
+          "DEF": 0,
+          "DEF%": 0,
+          "Crit Rate": 1.75,
+          "Crit DMG": 1,
+          "SkillDMG": 1.1,
+          "Energy Regen": 0.2
+        },
+        "skillWeights": {
+          "Basic Attack DMG Bonus": 0.1,
+          "Heavy Attack DMG Bonus": 0.88,
+          "Resonance Skill DMG Bonus": 0,
+          "Resonance Liberation DMG Bonus": 0
+        },
+        "maxScoreByCost": {
+          "1": 81.922,
+          "3": 82.623,
+          "4": 85.873
         },
         "thresholdsByCost": {
           "1": [
@@ -4960,6 +6244,8 @@ export const characterNames = {
   "1106": "釉瑚",
   "1107": "珂莱塔",
   "1108": "绯雪",
+  "1109": "洛瑟菈",
+  "1110": "穗穗",
   "1202": "炽霞",
   "1203": "安可",
   "1204": "莫特斐",
@@ -4970,6 +6256,7 @@ export const characterNames = {
   "1209": "莫宁",
   "1210": "爱弥斯",
   "1211": "达妮娅",
+  "1212": "景燃",
   "1301": "卡卡罗",
   "1302": "吟霖",
   "1303": "渊武",
@@ -4977,6 +6264,9 @@ export const characterNames = {
   "1305": "相里要",
   "1306": "奥古斯塔",
   "1307": "卜灵",
+  "1308": "丽贝卡",
+  "1309": "漂泊者·导电",
+  "1310": "漂泊者·导电",
   "1402": "秧秧",
   "1403": "秋水",
   "1404": "忌炎",
@@ -4988,6 +6278,7 @@ export const characterNames = {
   "1410": "尤诺",
   "1411": "仇远",
   "1412": "西格莉卡",
+  "1413": "清宵",
   "1501": "漂泊者·衍射",
   "1502": "漂泊者·衍射",
   "1503": "维里奈",
@@ -4998,6 +6289,7 @@ export const characterNames = {
   "1508": "千咲",
   "1509": "琳奈",
   "1510": "陆·赫斯",
+  "1511": "露西",
   "1601": "桃祈",
   "1602": "丹瑾",
   "1603": "椿",
@@ -5005,7 +6297,8 @@ export const characterNames = {
   "1605": "漂泊者·湮灭",
   "1606": "洛可可",
   "1607": "坎特蕾拉",
-  "1608": "弗洛洛"
+  "1608": "弗洛洛",
+  "1610": "秧秧·玄翎"
 };
 
 export const weaponNames = {
@@ -5014,6 +6307,38 @@ export const weaponNames = {
 };
 
 export const sonataNames = {
+  "1": "凝夜白霜",
+  "2": "熔山裂谷",
+  "3": "彻空冥雷",
+  "4": "啸谷长风",
+  "5": "浮星祛暗",
+  "6": "沉日劫明",
+  "7": "隐世回光",
   "8": "轻云出月",
-  "11": "此间永驻之光"
+  "9": "不绝余音",
+  "10": "凌冽决断之心",
+  "11": "此间永驻之光",
+  "12": "幽夜隐匿之帷",
+  "13": "高天共奏之曲",
+  "14": "无惧浪涛之勇",
+  "16": "流云逝尽之空",
+  "17": "愿戴荣光之旅",
+  "18": "奔狼燎原之焰",
+  "19": "失序彼岸之梦",
+  "20": "荣斗铸锋之冠",
+  "21": "息界同调之律",
+  "22": "焚羽猎魔之影",
+  "23": "命理崩毁之弦",
+  "24": "逆光跃彩之约",
+  "25": "星构寻辉之环",
+  "26": "流金溯真之式",
+  "27": "长路启航之星",
+  "28": "斑驳粉饰之沫",
+  "29": "听唤语义之愿",
+  "30": "雪落无声之愿",
+  "31": "剪心辑梦之影",
+  "32": "碎梦亡鬼之魇",
+  "33": "羽落空尘之歌",
+  "34": "清邪荡煞之心",
+  "35": "冥途夜行之灯"
 };

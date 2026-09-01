@@ -18,7 +18,7 @@
 - 展示角色、武器、技能、面板和五件声骸
 - 按国内 WWUID 评分配置标记有效词条、声骸等级和优化目标
 - 对比前后两次同步的评分、武器和声骸变化
-- 自动检查 WWUID 上游评分配置版本并提示更新
+- 自动检查 XutheringWavesUID 当前评分配置并支持一键更新
 - 在 macOS 上自动遍历声骸仓库，通过系统 Vision OCR 识别主副词条并评分
 - 支持首件预检、实时扫描进度、中断结果保留及本地库存 JSON 导入导出
 - 自动识别 Windows、macOS 和 Linux 的常见游戏路径，提取抽卡链接
@@ -77,13 +77,13 @@ npm start
 npm test
 ```
 
-更新固定版本的 WWUID 评分配置：
+更新固定版本的 WWUID 基础数据和 XutheringWavesUID 最新评分配置：
 
 ```bash
 npm run sync:wwuid
 ```
 
-普通用户启动时会检查 GitHub 上的 WWUID 版本；发现新版后可点击侧栏按钮主动更新。更新失败会自动恢复原配置。评分参考和第三方许可见 [NOTICE](NOTICE.md)，设计说明见 [docs/build-card-echo-scoring-design.md](docs/build-card-echo-scoring-design.md)。
+普通用户启动时会检查持续维护的 XutheringWavesUID；发现新版后可点击侧栏按钮主动更新全部角色评分。更新失败会自动恢复原配置。评分参考和第三方许可见 [NOTICE](NOTICE.md)，设计说明见 [docs/build-card-echo-scoring-design.md](docs/build-card-echo-scoring-design.md)。
 
 ## 许可与声明
 

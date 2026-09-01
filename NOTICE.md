@@ -1,12 +1,13 @@
 # 第三方评分口径说明
 
-角色声骸评分的算法和全角色权重同步自：
+角色声骸评分算法和基础配置来自：
 
 - [WutheringWavesUID / WWUID](https://github.com/raared/WWUID)
 - 算法文件：`WutheringWavesUID/utils/calculate.py`
 - 角色配置：`WutheringWavesUID/utils/map/character/`
 - 固定版本：`1d0ed3b7bc640cdf05b9320e5d514227549bf0c2`
-- 绯雪配置：持续维护的 [XutheringWavesUID](https://github.com/Loping151/XutheringWavesUID) 公开评分资源
+
+全部角色的当前权重、条件模板和新增角色配置由持续维护的 [XutheringWavesUID](https://github.com/Loping151/XutheringWavesUID) 公开评分资源覆盖更新；同步版本记录在 `wwuid-sync-report.json`。
 
 本项目按 GPL-3.0-only 分发，完整许可文本见 `LICENSE`。同步器只引入评分配置和许可文本，不引入机器人、图片识别或框架代码。
 

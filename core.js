@@ -141,13 +141,16 @@ export function selectCharacterRule(build) {
     return counts;
   }, {});
   const dominantSet = Object.keys(setCounts).sort((a, b) => setCounts[b] - setCounts[a])[0];
-  const context = { ph: sonataNames[dominantSet], weaponId: build.weaponId, sequence: build.sequence };
+  const fivePieceSet = Object.keys(setCounts).find(id => setCounts[id] >= 5);
+  const context = { ph: sonataNames[dominantSet], sonata_5: sonataNames[fivePieceSet], weaponId: build.weaponId, sequence: build.sequence };
   const chosen = ruleSet.conditions.find(condition => matches(condition, context))?.choose || ruleSet.defaultTemplate;
   const rule = { ...(ruleSet.templates[chosen] || ruleSet.templates[ruleSet.defaultTemplate]), attribute: ruleSet.attribute };
   return { rule, templateName: rule.name || chosen };
 }
 
 function matches(condition, context) {
+  if (condition.op === '&&') return condition.sub?.every(item => matches(item, context)) || false;
+  if (condition.op === '||') return condition.sub?.some(item => matches(item, context)) || false;
   const actual = context[condition.key];
   const expected = condition.value;
   if (condition.op === '=') return actual === expected;
