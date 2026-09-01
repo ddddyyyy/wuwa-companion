@@ -4,7 +4,7 @@ import { compareBuild, parseUID, normalizeBuild, scoreBuild, scoreEcho, selectCh
 import { characterRuleSets, wwuidMeta } from '../character-rules.js';
 import { candidateLogPaths, extractConveneURL, trackerPlatform } from '../convene-link.js';
 import { parseEchoScan, parseEchoScanBatch } from '../echo-inventory.js';
-import { server } from '../server.js';
+import { selectBuildHistory, server } from '../server.js';
 
 test('accepts UID and exact WuWaBuilds profile URL only', () => {
   assert.equal(parseUID('700000001'), '700000001');
@@ -106,6 +106,17 @@ test('compares score, weapon and replaced echoes with the previous build', () =>
   assert.equal(difference.echoes.length, 1);
   assert.equal(difference.echoes[0].before.id, '1');
   assert.ok(difference.delta > 0);
+});
+
+test('keeps the latest two public builds for duplicate characters', () => {
+  const build = (id, characterId, timestamp) => ({ id, character: { id: characterId }, timestamp });
+  const history = selectBuildHistory([
+    build('older', '1210', '2026-08-10T01:24:39Z'),
+    build('other', '1108', '2026-08-31T11:55:00Z'),
+    build('newer', '1210', '2026-08-31T11:52:53Z')
+  ]);
+  assert.deepEqual(history.latest.map(item => item.id), ['other', 'newer']);
+  assert.deepEqual(history.previous.map(item => item.id), ['older']);
 });
 
 test('rejects scoring updates without the local action header', async () => {

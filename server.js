@@ -60,13 +60,9 @@ export async function loadLatestBuilds(input) {
     if (!result.builds.length) break;
   }
 
-  const latest = new Map();
-  for (const build of summaries) {
-    const previous = latest.get(build.character?.id);
-    if (!previous || previous.timestamp < build.timestamp) latest.set(build.character?.id, build);
-  }
-  const builds = [];
-  for (const summary of [...latest.values()].sort((a, b) => b.timestamp.localeCompare(a.timestamp))) {
+  const { latest, previous } = selectBuildHistory(summaries);
+
+  async function loadBuild(summary) {
     const build = normalizeBuild(await remoteJSON(`/build/${encodeURIComponent(summary.id)}`));
     const weapon = await resourceJSON(`/XutheringWavesUID/resource/map/detail_json/weapon/${build.weaponId}.json`);
     build.weaponName = weapon?.name;
@@ -76,10 +72,28 @@ export async function loadLatestBuilds(input) {
       echo.name = resource?.name;
       echo.intensity = resource?.intensityCode;
     }));
-    builds.push(build);
+    return build;
   }
-  const data = { uid, builds, syncedAt: new Date().toISOString() };
+  const [builds, previousBuilds] = await Promise.all([
+    Promise.all(latest.map(loadBuild)),
+    Promise.all(previous.map(loadBuild))
+  ]);
+  const data = { uid, builds, previousBuilds, syncedAt: new Date().toISOString() };
   return data;
+}
+
+export function selectBuildHistory(summaries) {
+  const history = new Map();
+  for (const build of summaries) {
+    const builds = history.get(build.character?.id) || [];
+    builds.push(build);
+    history.set(build.character?.id, builds);
+  }
+  history.forEach(builds => builds.sort((a, b) => b.timestamp.localeCompare(a.timestamp)));
+  return {
+    latest: [...history.values()].map(builds => builds[0]).sort((a, b) => b.timestamp.localeCompare(a.timestamp)),
+    previous: [...history.values()].map(builds => builds[1]).filter(Boolean)
+  };
 }
 
 export async function checkScoringUpdate(force = false) {

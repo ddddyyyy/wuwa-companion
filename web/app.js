@@ -64,7 +64,7 @@ if (inventoryData?.echoes) renderInventory();
 
 const stored = JSON.parse(localStorage.getItem('wuwa-builds') || 'null');
 const previousStored = JSON.parse(localStorage.getItem('wuwa-builds-previous') || 'null');
-if (stored?.uid && previousStored?.uid === stored.uid) previousBuilds = previousStored.builds || [];
+if (stored?.uid) previousBuilds = stored.previousBuilds || (previousStored?.uid === stored.uid ? previousStored.builds : []) || [];
 if (stored?.uid) {
   input.value = stored.uid;
   if (stored.builds?.every(build => build.characterLevel != null && build.weaponLevel != null && build.stats && build.echoes?.every(echo => echo.resourceId))) {
@@ -85,13 +85,15 @@ form.addEventListener('submit', async event => {
     const data = await response.json();
     if (!response.ok) throw new Error(data.error || '同步失败');
     const old = JSON.parse(localStorage.getItem('wuwa-builds') || 'null');
+    let localPrevious = [];
     if (old?.uid === data.uid && JSON.stringify(old.builds) !== JSON.stringify(data.builds)) {
       localStorage.setItem('wuwa-builds-previous', JSON.stringify(old));
-      previousBuilds = old.builds || [];
+      localPrevious = old.builds || [];
     } else if (old?.uid !== data.uid) {
       localStorage.removeItem('wuwa-builds-previous');
-      previousBuilds = [];
     }
+    previousBuilds = [...(data.previousBuilds || []), ...localPrevious.filter(build => !data.previousBuilds?.some(item => item.characterId === build.characterId))];
+    data.previousBuilds = previousBuilds;
     localStorage.setItem('wuwa-builds', JSON.stringify(data));
     input.value = data.uid;
     render(data.builds);
@@ -294,7 +296,7 @@ function renderDifference(build) {
   const changes = [];
   if (difference.weaponChanged) changes.push(`武器：${weaponLabel(previous)} → ${weaponLabel(build)}`);
   changes.push(...difference.echoes.map(item => `C${item.after.cost} ${item.before?.name || '旧声骸'} → ${item.after.name || '新声骸'}${item.beforeScore && item.afterScore ? `（${number(item.beforeScore.value)} → ${number(item.afterScore.value)}）` : ''}`));
-  buildDiff.innerHTML = `<div><small>较上次同步</small><strong class="${difference.delta >= 0 ? 'positive' : 'negative'}">${delta || (difference.changed ? 'Build 已变化' : '无变化')}</strong></div>${changes.length ? `<ul>${changes.map(item => `<li>${escapeHTML(item)}</li>`).join('')}</ul>` : '<p>装备与声骸没有变化</p>'}`;
+  buildDiff.innerHTML = `<div><small>较上一版 Build</small><strong class="${difference.delta >= 0 ? 'positive' : 'negative'}">${delta || (difference.changed ? 'Build 已变化' : '无变化')}</strong></div>${changes.length ? `<ul>${changes.map(item => `<li>${escapeHTML(item)}</li>`).join('')}</ul>` : '<p>装备与声骸没有变化</p>'}`;
 }
 
 function weaponLabel(build) {
